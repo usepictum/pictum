@@ -1,0 +1,47 @@
+name: Laravel Mirror
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+concurrency:
+  group: mirror-laravel
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  mirror:
+    name: Mirror pictum-laravel
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+
+    steps:
+      - name: Generate mirror token
+        id: mirror-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: pictum-laravel
+          permission-contents: write
+
+      - name: Checkout latest main
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up git-filter-repo
+        run: pipx install git-filter-repo==2.47.0
+
+      - name: Mirror Laravel subtree
+        env:
+          MIRROR_TOKEN: ${{ steps.mirror-token.outputs.token }}
+        run: |
+          scripts/sync-laravel-subtree.sh \
+            "https://x-access-token:${MIRROR_TOKEN}@github.com/usepictum/pictum-laravel.git"
