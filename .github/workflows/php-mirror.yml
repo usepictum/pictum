@@ -2,6 +2,7 @@ name: PHP Mirror
 
 on:
   push:
+    branches: ['**']
   workflow_dispatch:
 
 concurrency:
