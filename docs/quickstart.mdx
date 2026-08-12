@@ -1,0 +1,351 @@
+---
+title: "Quickstart"
+description: "Install Pictum and render your first icon."
+icon: "rocket"
+---
+
+Select your integration, install Pictum, and render your first icon.
+
+Icons use a lowercase `prefix:name` identifier, such as `lucide:circle-check`.
+
+<View title="React" icon="https://pictum.dev/v1/icons/devicon:react.svg">
+  <Steps>
+    <Step title="Install Pictum">
+      Install the React package.
+
+      <CodeGroup>
+        ```bash npm
+        npm install @pictum/react
+        ```
+
+        ```bash pnpm
+        pnpm add @pictum/react
+        ```
+
+        ```bash bun
+        bun add @pictum/react
+        ```
+
+        ```bash yarn
+        yarn add @pictum/react
+        ```
+      </CodeGroup>
+    </Step>
+
+    <Step title="Render your first icon">
+      ```tsx
+      import { Icon } from "@pictum/react";
+
+      export function Example() {
+        return (
+          <Icon
+            name="lucide:circle-check"
+            aria-label="Completed"
+            width={24}
+            height={24}
+          />
+        );
+      }
+      ```
+    </Step>
+  </Steps>
+
+  Read the complete [React integration](/integrations/react).
+</View>
+
+<View title="Vue" icon="https://pictum.dev/v1/icons/devicon:vuejs.svg">
+  <Steps>
+    <Step title="Install Pictum">
+      Install the Vue package.
+
+      <CodeGroup>
+        ```bash npm
+        npm install @pictum/vue
+        ```
+
+        ```bash pnpm
+        pnpm add @pictum/vue
+        ```
+
+        ```bash bun
+        bun add @pictum/vue
+        ```
+
+        ```bash yarn
+        yarn add @pictum/vue
+        ```
+      </CodeGroup>
+    </Step>
+
+    <Step title="Render your first icon">
+      ```vue
+      <script setup lang="ts">
+      import { Icon } from "@pictum/vue";
+      </script>
+
+      <template>
+        <Icon
+          name="lucide:circle-check"
+          aria-label="Completed"
+          width="24"
+          height="24"
+        />
+      </template>
+      ```
+    </Step>
+  </Steps>
+
+  Read the complete [Vue integration](/integrations/vue).
+</View>
+
+<View title="Svelte" icon="https://pictum.dev/v1/icons/devicon:svelte.svg">
+  <Steps>
+    <Step title="Install Pictum">
+      Install the Svelte package.
+
+      <CodeGroup>
+        ```bash npm
+        npm install @pictum/svelte
+        ```
+
+        ```bash pnpm
+        pnpm add @pictum/svelte
+        ```
+
+        ```bash bun
+        bun add @pictum/svelte
+        ```
+
+        ```bash yarn
+        yarn add @pictum/svelte
+        ```
+      </CodeGroup>
+    </Step>
+
+    <Step title="Render your first icon">
+      ```svelte
+      <script lang="ts">
+        import { Icon } from "@pictum/svelte";
+      </script>
+
+      <Icon
+        name="lucide:circle-check"
+        aria-label="Completed"
+        width={24}
+        height={24}
+      />
+      ```
+    </Step>
+  </Steps>
+
+  Read the complete [Svelte integration](/integrations/svelte).
+</View>
+
+<View title="Astro" icon="https://pictum.dev/v1/icons/devicon:astro.svg">
+  <Steps>
+    <Step title="Install Pictum">
+      Install the Astro package.
+
+      <CodeGroup>
+        ```bash npm
+        npm install @pictum/astro
+        ```
+
+        ```bash pnpm
+        pnpm add @pictum/astro
+        ```
+
+        ```bash bun
+        bun add @pictum/astro
+        ```
+
+        ```bash yarn
+        yarn add @pictum/astro
+        ```
+      </CodeGroup>
+    </Step>
+
+    <Step title="Render your first icon">
+      ```astro
+      ---
+      import { Icon } from "@pictum/astro/components";
+      ---
+
+      <Icon
+        name="lucide:circle-check"
+        aria-label="Completed"
+        width={24}
+        height={24}
+      />
+      ```
+    </Step>
+  </Steps>
+
+  Read the complete [Astro integration](/integrations/astro).
+</View>
+
+<View title="Laravel" icon="https://pictum.dev/v1/icons/devicon:laravel.svg">
+  <Steps>
+    <Step title="Install Pictum">
+      Install the Laravel package.
+
+      ```bash
+      composer require pictum/laravel
+      ```
+    </Step>
+
+    <Step title="Render your first icon">
+      ```blade
+      <x-pictum::icon
+        name="lucide:circle-check"
+        aria-label="Completed"
+        width="24"
+        height="24"
+      />
+      ```
+    </Step>
+  </Steps>
+
+  Read the complete [Laravel integration](/integrations/laravel).
+</View>
+
+<View title="JavaScript" icon="https://pictum.dev/v1/icons/devicon:javascript.svg">
+  <Steps>
+    <Step title="Install Pictum">
+      Install the JavaScript package.
+
+      <CodeGroup>
+        ```bash npm
+        npm install pictum
+        ```
+
+        ```bash pnpm
+        pnpm add pictum
+        ```
+
+        ```bash bun
+        bun add pictum
+        ```
+
+        ```bash yarn
+        yarn add pictum
+        ```
+      </CodeGroup>
+    </Step>
+
+    <Step title="Render your first icon">
+      ```js
+      import { icon } from "pictum";
+
+      const image = document.createElement("img");
+      image.src = icon("lucide:circle-check").url;
+      image.alt = "Completed";
+      image.width = 24;
+      image.height = 24;
+
+      document.body.append(image);
+      ```
+    </Step>
+  </Steps>
+
+  Read the complete [JavaScript integration](/integrations/javascript).
+</View>
+
+<View title="Web Components" icon="https://pictum.dev/v1/icons/devicon:html5.svg">
+  <Steps>
+    <Step title="Install Pictum">
+      Install the Web Components package.
+
+      <CodeGroup>
+        ```bash npm
+        npm install @pictum/web
+        ```
+
+        ```bash pnpm
+        pnpm add @pictum/web
+        ```
+
+        ```bash bun
+        bun add @pictum/web
+        ```
+
+        ```bash yarn
+        yarn add @pictum/web
+        ```
+      </CodeGroup>
+    </Step>
+
+    <Step title="Render your first icon">
+      ```html
+      <script type="module">
+        import { definePictumElements } from "@pictum/web";
+
+        definePictumElements();
+      </script>
+
+      <pictum-icon
+        name="lucide:circle-check"
+        alt="Completed"
+        style="width: 24px; height: 24px"
+      ></pictum-icon>
+      ```
+    </Step>
+  </Steps>
+
+  Read the complete [Web Components integration](/integrations/web-components).
+</View>
+
+<View title="PHP" icon="https://pictum.dev/v1/icons/skill-icons:php-light.svg">
+  <Steps>
+    <Step title="Install Pictum">
+      Install the PHP package and Guzzle.
+
+      ```bash
+      composer require pictum/pictum guzzlehttp/guzzle
+      ```
+    </Step>
+
+    <Step title="Render your first icon">
+      ```php
+      <?php
+
+      use Pictum\Pictum;
+
+      require __DIR__ . '/vendor/autoload.php';
+
+      $pictum = new Pictum();
+      ?>
+      <span role="img" aria-label="Completed">
+        <?php echo $pictum->icon('lucide:circle-check')->svg(); ?>
+      </span>
+      ```
+    </Step>
+  </Steps>
+
+  Read the complete [PHP integration](/integrations/php).
+</View>
+
+<View title="URL" icon="https://pictum.dev/v1/icons/tabler:protocol.svg">
+  <Steps>
+    <Step title="Render your first icon">
+      ```html
+      <img
+        src="https://pictum.dev/v1/icons/lucide:circle-check.svg"
+        alt="Completed"
+        width="24"
+        height="24"
+      />
+      ```
+    </Step>
+  </Steps>
+
+  Explore the complete [API reference](/api-reference/overview).
+</View>
+
+## Next steps
+
+- Learn how to [choose and render icons](/guides/icons).
+- Choose an [avatar style and format](/guides/avatars).
+- Create and configure [QR codes](/guides/qr-codes).
+- Create custom-size [placeholders](/guides/placeholders).
+- Review the [OpenAPI reference](/api-reference/overview) for direct HTTP access.

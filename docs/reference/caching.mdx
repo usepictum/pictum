@@ -1,0 +1,22 @@
+---
+title: "Caching"
+description: "Understand how long Pictum responses are cached and refreshed."
+icon: "database"
+---
+
+Successful Pictum responses are public and cacheable. Each unique URL has its own cache entry, including its path and query parameters.
+
+## Cache times
+
+| Where | Header | Value | Meaning |
+| --- | --- | --- | --- |
+| Browsers | `Cache-Control` | `public, max-age=86400` | Reuse the response for 1 day. |
+| Cloudflare | `Cloudflare-CDN-Cache-Control` | `public, max-age=2592000, stale-while-revalidate=86400` | Reuse the response for 30 days, then allow the previous response for up to 1 day while refreshing it. |
+
+These values apply to icons, catalog responses, avatars, QR codes, and placeholders.
+
+## ETags
+
+Each successful response includes an `ETag` based on its content. Send it back with `If-None-Match`. If the content has not changed, Pictum returns `304 Not Modified` without sending the response body again.
+
+The `ETag` header is exposed to browser requests through CORS.

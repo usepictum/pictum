@@ -1,0 +1,14 @@
+packages:
+  - .
+
+allowBuilds:
+  '@scarf/scarf': true
+  core-js: false
+  es5-ext: false
+  keytar: true
+  puppeteer: true
+  sharp: true
+
+minimumReleaseAgeExclude:
+  - '@mintlify/*'
+  - mint

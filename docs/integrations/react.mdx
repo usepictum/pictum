@@ -1,0 +1,206 @@
+---
+title: "React"
+description: "Use Pictum icon, avatar, QR code, and placeholder interfaces with React."
+icon: "https://pictum.dev/v1/icons/devicon:react.svg"
+---
+
+<Badge icon="server" color="green" stroke className="rendering-badge">SSR</Badge>
+<Badge icon="monitor" color="green" stroke className="rendering-badge">CSR</Badge>
+
+## Installation
+
+Install the React 19.2+ package with your preferred package manager.
+
+<CodeGroup>
+  ```bash npm
+  npm install @pictum/react
+  ```
+
+  ```bash pnpm
+  pnpm add @pictum/react
+  ```
+
+  ```bash bun
+  bun add @pictum/react
+  ```
+
+  ```bash yarn
+  yarn add @pictum/react
+  ```
+</CodeGroup>
+
+## Agent skill
+
+Install the React integration skill for coding agents that support Agent Skills:
+
+```bash
+npx skills add usepictum/skills@react
+```
+
+## Icons
+
+Render an icon with `Icon`.
+
+<CodeGroup>
+  ```tsx Component
+  import { Icon } from "@pictum/react";
+
+  export function Example() {
+    return (
+      <Icon
+        name="devicon:react"
+        aria-label="React"
+        className="size-6"
+      />
+    );
+  }
+  ```
+
+  ```tsx Hook
+  import { useIcon } from "@pictum/react";
+
+  export function Example() {
+    const asset = useIcon("devicon:react");
+
+    return <img src={asset.url} alt="React" className="size-6" />;
+  }
+  ```
+</CodeGroup>
+
+`Icon` fetches and caches canonical SVG markup, then renders it inline. It contains its own Suspense boundary while that request is pending, allowing streaming SSR to emit the resolved SVG without a caller-provided boundary.
+
+## Avatars
+
+Render a generated avatar or portrait with `Avatar`.
+
+<CodeGroup>
+  ```tsx Component
+  import { Avatar } from "@pictum/react";
+
+  export function Example() {
+    return (
+      <Avatar
+        seed="customer-123"
+        variant="portrait"
+        gender="female"
+        format="webp"
+        size={256}
+        alt="Customer"
+        className="size-10"
+      />
+    );
+  }
+  ```
+
+  ```tsx Hook
+  import { useAvatar } from "@pictum/react";
+
+  export function Example() {
+    const asset = useAvatar("customer-123", {
+      variant: "monogram",
+    });
+
+    return <img src={asset.url} alt="Customer" className="size-10" />;
+  }
+  ```
+</CodeGroup>
+
+## QR codes
+
+Render scannable text or URLs with `QrCode`.
+
+<CodeGroup>
+  ```tsx Component
+  import { QrCode } from "@pictum/react";
+
+  export function Example() {
+    return (
+      <QrCode
+        value="https://pictum.dev"
+        format="svg"
+        quietZone={false}
+        foreground="#4c1d95ff"
+        background="#ede9fe"
+        aria-label="Open Pictum"
+        className="size-32"
+      />
+    );
+  }
+  ```
+
+  ```tsx Hook
+  import { useQrCode } from "@pictum/react";
+
+  export function Example() {
+    const asset = useQrCode("https://pictum.dev", {
+      format: "svg",
+      quietZone: false,
+      foreground: "#4c1d95ff",
+      background: "#ede9fe",
+    });
+
+    return <img src={asset.url} alt="Open Pictum" className="size-32" />;
+  }
+  ```
+</CodeGroup>
+
+## Placeholders
+
+Render square or custom-dimension images with `Placeholder`.
+
+<CodeGroup>
+  ```tsx Component
+  import { Placeholder } from "@pictum/react";
+
+  export function Example() {
+    return (
+      <Placeholder
+        size={320}
+        format="webp"
+        density={2}
+        background="#ffffff"
+        color="#6d28d9"
+        text="Coming soon"
+        alt="Coming soon"
+      />
+    );
+  }
+  ```
+
+  ```tsx Hook
+  import { usePlaceholder } from "@pictum/react";
+
+  export function Example() {
+    const asset = usePlaceholder({
+      size: 320,
+      format: "webp",
+      density: 2,
+      text: "Coming soon",
+    });
+
+    return <img src={asset.url} alt="Coming soon" />;
+  }
+  ```
+</CodeGroup>
+
+Hooks return an asset immediately. Reading `.url` makes no request; `.svg()` fetches canonical SVG markup and is unavailable for portrait avatars.
+
+## Custom deployment
+
+You do not need a provider to use Pictum's production API. Components and hooks work immediately after installation.
+
+Only add `PictumProvider` when a subtree should use another Pictum deployment:
+
+```tsx
+import { PictumProvider } from "@pictum/react";
+
+export function App() {
+  return (
+    <PictumProvider options={{ baseUrl: "https://assets.example.com/v1" }}>
+      <Dashboard />
+    </PictumProvider>
+  );
+}
+```
+
+Pass `options={{ baseUrl }}` to one component or pass the options to a `use*` hook to override the provider.

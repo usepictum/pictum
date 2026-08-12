@@ -1,0 +1,50 @@
+---
+title: "API overview"
+description: "Understand Pictum API paths, response behavior, and errors."
+icon: "waypoints"
+---
+
+The v1 API serves a public icon catalog, deterministic avatars, QR codes, and placeholders.
+
+## Base URL
+
+Send all API requests to the production base URL:
+
+```text
+https://pictum.dev/v1/...
+```
+
+## Canonical endpoints
+
+| Asset | Endpoint |
+| --- | --- |
+| Icon collections | `GET /v1/icons.json` |
+| Collection icons | `GET /v1/icons/{prefix}.json` |
+| Icon | `GET /v1/icons/{prefix}:{name}.svg` |
+| Avatar | `GET /v1/avatar.{format}` |
+| QR code | `GET /v1/qrcode.{format}` |
+| Placeholder | `GET /v1/placeholder.{format}` |
+
+Avatar and placeholder inputs are query parameters. Use the generated endpoint pages for their validation rules and response formats.
+
+## Response behavior
+
+Successful image responses include:
+
+- A format-specific `Content-Type`.
+- `X-Content-Type-Options: nosniff`.
+- Public `Cache-Control` directives.
+- An `ETag` exposed through CORS.
+- `Access-Control-Allow-Origin: *` for browser consumers.
+
+SVG responses also include a restrictive Content Security Policy.
+
+## Errors
+
+| Status | Meaning |
+| --- | --- |
+| `404` | A route constraint or requested resource did not match |
+| `422` | Avatar, QR code, or placeholder input failed validation |
+| `503` | The icon catalog is unavailable |
+
+Use the generated endpoint pages in this section for parameter and response details.

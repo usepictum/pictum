@@ -1,0 +1,292 @@
+---
+title: "Icons"
+description: "330,000+ icons, ready when you are"
+icon: "shapes"
+---
+
+import { IconPreviewer } from "/snippets/icon-previewer.jsx";
+
+<IconPreviewer />
+
+## Usage
+
+Thanks to [Iconify](https://iconify.design/), Pictum brings open-source icon sets together in one catalog. [Browse the Iconify icon gallery](https://icon-sets.iconify.design/) to choose an icon, then use its lowercase kebab-case `prefix:name` identifier, such as `lucide:sparkles`.
+
+<View title="React" icon="https://pictum.dev/v1/icons/devicon:react.svg">
+  <CodeGroup>
+    ```tsx Component
+    import { Icon } from "@pictum/react";
+
+    export function Example() {
+      return (
+        <Icon
+          name="lucide:sparkles"
+          aria-label="Sparkles"
+          className="size-6 text-violet-600"
+        />
+      );
+    }
+    ```
+
+    ```tsx Hook
+    import { useIcon } from "@pictum/react";
+
+    export function Example() {
+      const asset = useIcon("lucide:sparkles");
+
+      return <img src={asset.url} alt="Sparkles" width={24} height={24} />;
+    }
+    ```
+  </CodeGroup>
+
+  React's `Icon` uses an internal Suspense boundary while it loads the inline SVG.
+
+  #### Props
+
+  <ResponseField name="name" type="string" required>
+    The `name` prop or hook argument identifies the icon using exact lowercase kebab-case `prefix:name` syntax.
+  </ResponseField>
+
+  <ResponseField name="...props" type="SVG props">
+    Additional native SVG props are forwarded to the rendered `<svg>`.
+  </ResponseField>
+</View>
+
+<View title="Vue" icon="https://pictum.dev/v1/icons/devicon:vuejs.svg">
+  <CodeGroup>
+    ```vue Component
+    <script setup lang="ts">
+    import { Icon } from "@pictum/vue";
+    </script>
+
+    <template>
+      <Icon
+        name="devicon:vuejs"
+        aria-label="Vue"
+        class="size-6"
+      />
+    </template>
+    ```
+
+    ```vue Composable
+    <script setup lang="ts">
+    import { useIcon } from "@pictum/vue";
+
+    const asset = useIcon("devicon:vuejs");
+    </script>
+
+    <template>
+      <img :src="asset.url" alt="Vue" width="24" height="24" />
+    </template>
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="name" type="string" required>
+    The `name` prop or helper argument identifies the icon using exact lowercase kebab-case `prefix:name` syntax.
+  </ResponseField>
+
+  <ResponseField name="...attrs" type="SVG attributes">
+    Additional SVG attributes are forwarded to the rendered `<svg>`.
+  </ResponseField>
+</View>
+
+<View title="Svelte" icon="https://pictum.dev/v1/icons/devicon:svelte.svg">
+  <CodeGroup>
+    ```svelte Component
+    <script lang="ts">
+      import { Icon } from "@pictum/svelte";
+    </script>
+
+    <Icon name="devicon:svelte" aria-label="Svelte" class="size-6" />
+    ```
+
+    ```svelte Helper
+    <script lang="ts">
+      import { useIcon } from "@pictum/svelte";
+
+      const asset = useIcon("devicon:svelte");
+    </script>
+
+    <img src={asset.current.url} alt="Svelte" width="24" height="24" />
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="name" type="string" required>
+    The `name` prop or helper argument identifies the icon using exact lowercase kebab-case `prefix:name` syntax.
+  </ResponseField>
+
+  <ResponseField name="...attributes" type="SVG attributes">
+    Additional SVG attributes are forwarded to the rendered `<svg>`.
+  </ResponseField>
+</View>
+
+<View title="Astro" icon="https://pictum.dev/v1/icons/devicon:astro.svg">
+  <CodeGroup>
+    ```astro Component
+    ---
+    import { Icon } from "@pictum/astro/components";
+    ---
+
+    <Icon name="devicon:astro" aria-label="Astro" class="size-6" />
+    ```
+
+    ```astro Helper
+    ---
+    import { icon } from "@pictum/astro";
+
+    const asset = icon("devicon:astro");
+    const url = asset.url;
+    const svg = await asset.svg();
+    ---
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="name" type="string" required>
+    The `name` prop or helper argument identifies the icon using exact lowercase kebab-case `prefix:name` syntax.
+  </ResponseField>
+
+  <ResponseField name="...attributes" type="SVG attributes">
+    Additional SVG attributes are forwarded to the rendered `<svg>`.
+  </ResponseField>
+</View>
+
+<View title="Laravel" icon="https://pictum.dev/v1/icons/devicon:laravel.svg">
+  <CodeGroup>
+    ```blade Component
+    <x-pictum::icon
+      name="devicon:laravel"
+      aria-label="Laravel"
+      class="size-6"
+    />
+    ```
+
+    ```php Facade
+    use Pictum\Laravel\Facades\Pictum;
+
+    $asset = Pictum::icon('devicon:laravel');
+    $url = $asset->url;
+    $svg = $asset->svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="name" type="string" required>
+    The `name` Blade component attribute or facade argument identifies the icon using exact lowercase kebab-case `prefix:name` syntax.
+  </ResponseField>
+
+  <ResponseField name="...attributes" type="SVG attributes">
+    Additional Blade attributes are forwarded to the rendered `<svg>`.
+  </ResponseField>
+</View>
+
+<View title="JavaScript" icon="https://pictum.dev/v1/icons/devicon:javascript.svg">
+  <CodeGroup>
+    ```ts URL
+    import { icon } from "pictum";
+
+    const url = icon("devicon:javascript").url;
+    ```
+
+    ```ts SVG
+    import { icon } from "pictum";
+
+    const svg = await icon("devicon:javascript").svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="name" type="string" required>
+    The `name` helper argument identifies the icon using exact lowercase kebab-case `prefix:name` syntax.
+  </ResponseField>
+</View>
+
+<View title="Web Components" icon="https://pictum.dev/v1/icons/devicon:html5.svg">
+  <CodeGroup>
+    ```html Component
+    <script type="module">
+      import { definePictumElements } from "@pictum/web";
+
+      definePictumElements();
+    </script>
+
+    <pictum-icon
+      name="devicon:html5"
+      alt="HTML5"
+      class="size-6"
+    ></pictum-icon>
+    ```
+
+    ```ts Helper
+    import { icon } from "@pictum/web";
+
+    const asset = icon("devicon:html5");
+    const url = asset.url;
+    const svg = await asset.svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="name" type="string" required>
+    The `name` custom element attribute or helper argument identifies the icon using exact lowercase kebab-case `prefix:name` syntax.
+  </ResponseField>
+
+  <ResponseField name="...attributes" type="HTML attributes">
+    Additional global HTML attributes apply to the `<pictum-icon>` element.
+  </ResponseField>
+</View>
+
+<View title="PHP" icon="https://pictum.dev/v1/icons/skill-icons:php-light.svg">
+  <CodeGroup>
+    ```php URL
+    use Pictum\Pictum;
+
+    $pictum = new Pictum();
+    $url = $pictum->icon('devicon:php')->url;
+    ```
+
+    ```php SVG
+    use Pictum\Pictum;
+
+    $pictum = new Pictum();
+    $svg = $pictum->icon('devicon:php')->svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="name" type="string" required>
+    The `name` client method argument identifies the icon using exact lowercase kebab-case `prefix:name` syntax.
+  </ResponseField>
+</View>
+
+<View title="URL" icon="https://pictum.dev/v1/icons/tabler:protocol.svg">
+  ```text
+  https://pictum.dev/v1/icons/{prefix}:{name}.svg
+  ```
+
+  #### Usage
+
+  ```html
+  <img
+    src="https://pictum.dev/v1/icons/lucide:sparkles.svg"
+    alt="Sparkles"
+    width="24"
+    height="24"
+  />
+  ```
+
+  #### Parameters
+
+  <ResponseField name="prefix:name" type="string" required>
+    Replace the path identifier with an exact lowercase kebab-case collection prefix and icon name separated by one colon. Aliases resolve to canonical, dimensionless SVG markup.
+  </ResponseField>
+</View>

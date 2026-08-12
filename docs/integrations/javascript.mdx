@@ -1,0 +1,127 @@
+---
+title: "JavaScript"
+description: "Use fully typed Pictum asset helpers without a framework runtime."
+icon: "https://pictum.dev/v1/icons/devicon:javascript.svg"
+---
+
+`pictum` provides framework-independent helpers for JavaScript and TypeScript applications. Generate asset URLs synchronously or retrieve canonical SVG markup on demand without a component runtime.
+
+The package is an ES module. Use a browser or server runtime that provides `URL`, `URLSearchParams`, `TextEncoder`, `btoa`, and `fetch` when the selected helpers require them.
+
+## Installation
+
+Install the package with your preferred package manager.
+
+<CodeGroup>
+  ```bash npm
+  npm install pictum
+  ```
+
+  ```bash pnpm
+  pnpm add pictum
+  ```
+
+  ```bash bun
+  bun add pictum
+  ```
+
+  ```bash yarn
+  yarn add pictum
+  ```
+</CodeGroup>
+
+## Agent skill
+
+Install the JavaScript integration skill for coding agents that support Agent Skills:
+
+```bash
+npx skills add usepictum/skills@javascript
+```
+
+## Icons
+
+Identify an icon by collection and name. Reading `.url` makes no network request; call `.svg()` when you need canonical SVG markup.
+
+```ts
+import { icon } from "pictum";
+
+const asset = icon("devicon:typescript");
+
+const url = asset.url;
+const svg = await asset.svg();
+```
+
+## Avatars
+
+Choose a stable seed, avatar variant, and image format. Portrait avatars accept `any`, `male`, or `female` for gender. The default is `any`.
+
+```ts
+import { avatar } from "pictum";
+
+const asset = avatar("customer-123", {
+  variant: "portrait",
+  gender: "female",
+  size: 256,
+});
+
+const url = asset.url;
+
+const svg = await avatar("ada-lovelace", {
+  variant: "monogram",
+}).svg();
+```
+
+The selected format controls `.url`. The optional `size` requests a square raster source from 16 to 1024 pixels. Generated avatars support `.svg()`; portrait avatars are raster-only and default to WebP.
+
+## QR codes
+
+Pass the text or URL to encode, select an output format, choose whether to include the quiet zone, and optionally set RGB or RGBA colors.
+
+```ts
+import { qrCode } from "pictum";
+
+const asset = qrCode("https://pictum.dev", {
+  format: "svg",
+  quietZone: false,
+  foreground: "#4c1d95ff",
+  background: "#ede9fe",
+});
+
+const url = asset.url;
+const svg = await asset.svg();
+```
+
+## Placeholders
+
+Create square or custom-dimension placeholders with optional text, colors, and retina density.
+
+```ts
+import { placeholder } from "pictum";
+
+const asset = placeholder({
+  width: 640,
+  height: 360,
+  format: "webp",
+  density: 2,
+  background: "#ffffff",
+  color: "#6d28d9",
+  text: "Coming soon",
+});
+
+const url = asset.url;
+const svg = await asset.svg();
+```
+
+## Custom deployment
+
+Pass an absolute `baseUrl` to any helper when you use a custom or staging deployment.
+
+```ts
+import { icon } from "pictum";
+
+const asset = icon("lucide:sparkles", {
+  baseUrl: "https://assets.example.com/v1",
+});
+```
+
+`baseUrl` must be an absolute HTTP or HTTPS URL without credentials, a query, or a fragment.

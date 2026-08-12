@@ -1,0 +1,167 @@
+---
+title: "Laravel"
+description: "Use Pictum icon, avatar, QR code, and placeholder interfaces with Laravel."
+icon: "https://pictum.dev/v1/icons/devicon:laravel.svg"
+---
+
+<Badge icon="server" color="green" stroke className="rendering-badge">SSR</Badge>
+
+## Installation
+
+Pictum supports PHP 8.2+ and Laravel 12 or 13. Install the package in your application with Composer; Laravel discovers its service provider automatically.
+
+```bash
+composer require pictum/laravel
+```
+
+## Agent skill
+
+Install the Laravel integration skill for coding agents that support Agent Skills:
+
+```bash
+npx skills add usepictum/skills@laravel
+```
+
+## Configuration
+
+The package uses `https://pictum.dev/v1` by default. Set `PICTUM_BASE_URL` for another deployment and `PICTUM_CACHE_STORE` to choose the store used for fetched icon markup.
+
+Publish the configuration file when you need to customize these settings:
+
+```bash
+php artisan vendor:publish --tag=pictum-config
+```
+
+## Icons
+
+Use the Blade component in views. Use the facade when application code needs the icon URL or canonical SVG markup.
+
+<CodeGroup>
+  ```blade Component
+  <x-pictum::icon
+    name="devicon:laravel"
+    aria-label="Laravel"
+    class="size-6"
+  />
+  ```
+
+  ```php Facade
+  use Pictum\Laravel\Facades\Pictum;
+
+  // Generate the URL without making a request.
+  $url = Pictum::icon('devicon:laravel')->url;
+
+  // Fetch canonical SVG markup.
+  $svg = Pictum::icon('devicon:laravel')->svg();
+  ```
+</CodeGroup>
+
+## Avatars
+
+Use the Blade component for profile images in views. The facade generates portrait and generated avatar URLs and retrieves canonical SVG for generated avatars.
+
+<CodeGroup>
+  ```blade Component
+  <x-pictum::avatar
+    seed="customer-123"
+    variant="portrait"
+    gender="female"
+    format="webp"
+    :size="256"
+    alt="Customer"
+    class="size-10"
+  />
+  ```
+
+  ```php Facade
+  use Pictum\Laravel\Facades\Pictum;
+
+  // Generate the URL without making a request.
+  $url = Pictum::avatar(
+      'customer-123',
+      variant: 'portrait',
+      gender: 'female',
+  )->url;
+
+  // Fetch canonical SVG markup.
+  $svg = Pictum::avatar(
+      'ada-lovelace',
+      variant: 'monogram',
+  )->svg();
+  ```
+</CodeGroup>
+
+## QR codes
+
+Use the Blade component for scannable text or URLs. Use the facade when application code needs the image URL or canonical SVG.
+
+<CodeGroup>
+  ```blade Component
+  <x-pictum::qr-code
+    value="https://pictum.dev"
+    format="svg"
+    quiet-zone="false"
+    foreground="#4c1d95ff"
+    background="#ede9fe"
+    aria-label="Open Pictum"
+    class="size-32"
+  />
+  ```
+
+  ```php Facade
+  use Pictum\Laravel\Facades\Pictum;
+
+  // Generate the URL without making a request.
+  $url = Pictum::qrCode(
+      'https://pictum.dev',
+      format: 'svg',
+      quietZone: false,
+      foreground: '#4c1d95ff',
+      background: '#ede9fe',
+  )->url;
+
+  // Fetch canonical SVG markup.
+  $svg = Pictum::qrCode('https://pictum.dev')->svg();
+  ```
+</CodeGroup>
+
+## Placeholders
+
+Use the Blade component for square or custom-dimension images. Use the facade when application code needs the selected image URL or SVG markup.
+
+<CodeGroup>
+  ```blade Component
+  <x-pictum::placeholder
+    size="320"
+    format="webp"
+    density="2"
+    background="#ffffff"
+    color="#6d28d9"
+    text="Coming soon"
+    alt="Coming soon"
+  />
+  ```
+
+  ```php Facade
+  use Pictum\Laravel\Facades\Pictum;
+
+  // Generate a custom-dimension URL without making a request.
+  $url = Pictum::placeholder(
+      width: 640,
+      height: 360,
+      format: 'webp',
+      density: 3,
+      text: 'Coming soon',
+  )->url;
+
+  // Fetch a square as canonical SVG markup.
+  $svg = Pictum::placeholder(
+      size: 320,
+      text: 'Coming soon',
+  )->svg();
+  ```
+</CodeGroup>
+
+Blade components accept `base-url` to override the configured deployment for one asset. Facade methods accept the equivalent `baseUrl` named argument.
+
+The icon component fetches and caches canonical markup before rendering inline SVG. Avatar, QR code, and placeholder components render image URLs. Reading an asset's `url` property makes no request; `svg()` fetches canonical SVG markup and is unavailable for portrait avatars.

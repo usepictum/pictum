@@ -1,0 +1,639 @@
+---
+title: "Placeholders"
+description: "Generate deterministic placeholders with native components, helpers, or URLs."
+icon: "image"
+---
+
+import { PlaceholderPreviewer } from "/snippets/placeholder-previewer.jsx";
+
+<PlaceholderPreviewer />
+
+## Usage
+
+Provide `size` for a square, or both `width` and `height` for custom dimensions. Components use those logical dimensions for the source and native display size; CSS can override the display. Use `#rrggbbaa` colors when you need transparency; SVG, PNG, and WebP preserve alpha, while JPEG composites transparent colors over white.
+
+<View title="React" icon="https://pictum.dev/v1/icons/devicon:react.svg">
+  <CodeGroup>
+    ```tsx Component
+    import { Placeholder } from "@pictum/react";
+
+    export function Example() {
+      return (
+        <Placeholder
+          width={640}
+          height={360}
+          background="#ede9fe"
+          color="#4c1d95"
+          text="Product preview"
+          alt="Product preview placeholder"
+        />
+      );
+    }
+    ```
+
+    ```tsx Hook
+    import { usePlaceholder } from "@pictum/react";
+
+    export function Example() {
+      const asset = usePlaceholder({
+        size: 320,
+        format: "webp",
+        density: 2,
+        text: "Coming soon",
+      });
+
+      return (
+        <img
+          src={asset.url}
+          alt="Coming soon placeholder"
+          width={320}
+          height={320}
+        />
+      );
+    }
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="size" type="integer">
+    The `size` prop or hook option selects the square dimension form. Use it alone, never with `width` or `height`. Accepted range: `16`-`2048`; logical area cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` prop or hook option selects the custom dimension form. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` prop or hook option selects the custom dimension form. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` prop or hook option selects the source encoding. Components and hooks default to SVG.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The `density` prop or hook option is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels; logical display dimensions do not change.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` prop or hook option sets the fill color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` prop or hook option sets the label color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` prop or hook option accepts up to `64` Unicode characters. Pass an empty string to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>
+
+<View title="Vue" icon="https://pictum.dev/v1/icons/devicon:vuejs.svg">
+  <CodeGroup>
+    ```vue Component
+    <script setup lang="ts">
+    import { Placeholder } from "@pictum/vue";
+    </script>
+
+    <template>
+      <Placeholder
+        :width="640"
+        :height="360"
+        background="#ede9fe"
+        color="#4c1d95"
+        text="Product preview"
+        alt="Product preview placeholder"
+      />
+    </template>
+    ```
+
+    ```vue Composable
+    <script setup lang="ts">
+    import { usePlaceholder } from "@pictum/vue";
+
+    const asset = usePlaceholder({
+      size: 320,
+      format: "webp",
+      density: 2,
+      text: "Coming soon",
+    });
+    </script>
+
+    <template>
+      <img
+        :src="asset.url"
+        alt="Coming soon placeholder"
+        width="320"
+        height="320"
+      />
+    </template>
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="size" type="integer">
+    The `size` prop or composable option selects the square dimension form. Use it alone, never with `width` or `height`. Accepted range: `16`-`2048`; logical area cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` prop or composable option selects the custom dimension form. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` prop or composable option selects the custom dimension form. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` prop or composable option selects the source encoding. Components and composables default to SVG.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The `density` prop or composable option is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels; logical display dimensions do not change.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` prop or composable option sets the fill color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` prop or composable option sets the label color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` prop or composable option accepts up to `64` Unicode characters. Pass an empty string to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>
+
+<View title="Svelte" icon="https://pictum.dev/v1/icons/devicon:svelte.svg">
+  <CodeGroup>
+    ```svelte Component
+    <script lang="ts">
+      import { Placeholder } from "@pictum/svelte";
+    </script>
+
+    <Placeholder
+      width={640}
+      height={360}
+      background="#ede9fe"
+      color="#4c1d95"
+      text="Product preview"
+      alt="Product preview placeholder"
+    />
+    ```
+
+    ```svelte Helper
+    <script lang="ts">
+      import { usePlaceholder } from "@pictum/svelte";
+
+      const asset = usePlaceholder({
+        size: 320,
+        format: "webp",
+        density: 2,
+        text: "Coming soon",
+      });
+    </script>
+
+    <img
+      src={asset.current.url}
+      alt="Coming soon placeholder"
+      width="320"
+      height="320"
+    />
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="size" type="integer">
+    The `size` prop or reactive helper option selects the square dimension form. Use it alone, never with `width` or `height`. Accepted range: `16`-`2048`; logical area cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` prop or reactive helper option selects the custom dimension form. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` prop or reactive helper option selects the custom dimension form. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` prop or reactive helper option selects the source encoding. Components and reactive helpers default to SVG.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The `density` prop or reactive helper option is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels; logical display dimensions do not change.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` prop or reactive helper option sets the fill color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` prop or reactive helper option sets the label color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` prop or reactive helper option accepts up to `64` Unicode characters. Pass an empty string to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>
+
+<View title="Astro" icon="https://pictum.dev/v1/icons/devicon:astro.svg">
+  <CodeGroup>
+    ```astro Component
+    ---
+    import { Placeholder } from "@pictum/astro/components";
+    ---
+
+    <Placeholder
+      width={640}
+      height={360}
+      background="#ede9fe"
+      color="#4c1d95"
+      text="Product preview"
+      alt="Product preview placeholder"
+    />
+    ```
+
+    ```astro Helper
+    ---
+    import { placeholder } from "@pictum/astro";
+
+    const asset = placeholder({
+      size: 320,
+      format: "webp",
+      density: 2,
+      text: "Coming soon",
+    });
+    ---
+
+    <img
+      src={asset.url}
+      alt="Coming soon placeholder"
+      width="320"
+      height="320"
+    />
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="size" type="integer">
+    The `size` component prop or helper option selects the square dimension form. Use it alone, never with `width` or `height`. Accepted range: `16`-`2048`; logical area cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` component prop or helper option selects the custom dimension form. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` component prop or helper option selects the custom dimension form. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` component prop or helper option selects the source encoding. Components and helpers default to SVG.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The `density` component prop or helper option is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels; logical display dimensions do not change.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` component prop or helper option sets the fill color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` component prop or helper option sets the label color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` component prop or helper option accepts up to `64` Unicode characters. Pass an empty string to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>
+
+<View title="Laravel" icon="https://pictum.dev/v1/icons/devicon:laravel.svg">
+  <CodeGroup>
+    ```blade Component
+    <x-pictum::placeholder
+      :width="640"
+      :height="360"
+      background="#ede9fe"
+      color="#4c1d95"
+      text="Product preview"
+      alt="Product preview placeholder"
+    />
+    ```
+
+    ```php Facade
+    use Pictum\Laravel\Facades\Pictum;
+
+    $url = Pictum::placeholder(
+        size: 320,
+        format: 'webp',
+        density: 2,
+        text: 'Coming soon',
+    )->url;
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="size" type="integer">
+    The `size` Blade component attribute or facade named argument selects the square dimension form. Use it alone, never with `width` or `height`. Accepted range: `16`-`2048`; logical area cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` Blade component attribute or facade named argument selects the custom dimension form. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` Blade component attribute or facade named argument selects the custom dimension form. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` Blade component attribute or facade named argument selects the source encoding. Components and facade calls default to SVG.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The `density` Blade component attribute or facade named argument is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels; logical display dimensions do not change.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` Blade component attribute or facade named argument sets the fill color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` Blade component attribute or facade named argument sets the label color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` Blade component attribute or facade named argument accepts up to `64` Unicode characters. Pass an empty string to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>
+
+<View title="JavaScript" icon="https://pictum.dev/v1/icons/devicon:javascript.svg">
+  <CodeGroup>
+    ```ts URL
+    import { placeholder } from "pictum";
+
+    const url = placeholder({
+      size: 320,
+      format: "webp",
+      density: 2,
+      text: "Coming soon",
+    }).url;
+    ```
+
+    ```ts SVG
+    import { placeholder } from "pictum";
+
+    const svg = await placeholder({ size: 320 }).svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="size" type="integer">
+    The `size` option selects the square dimension form. Use it alone, never with `width` or `height`. Accepted range: `16`-`2048`; logical area cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` option selects the custom dimension form. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` option selects the custom dimension form. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` option selects the source encoding referenced by `.url`. The helper defaults to SVG.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The `density` option is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels. Set explicit logical dimensions whenever the URL is rendered.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` option sets the fill color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` option sets the label color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` option accepts up to `64` Unicode characters. Pass an empty string to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>
+
+<View title="Web Components" icon="https://pictum.dev/v1/icons/devicon:html5.svg">
+  <CodeGroup>
+    ```html Component
+    <script type="module">
+      import { definePictumElements } from "@pictum/web";
+
+      definePictumElements();
+    </script>
+
+    <pictum-placeholder
+      width="640"
+      height="360"
+      background="#ede9fe"
+      color="#4c1d95"
+      text="Product preview"
+      alt="Product preview placeholder"
+    ></pictum-placeholder>
+    ```
+
+    ```ts Helper
+    import { placeholder } from "@pictum/web";
+
+    const url = placeholder({
+      size: 320,
+      format: "webp",
+      density: 2,
+      text: "Coming soon",
+    }).url;
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="size" type="integer">
+    The `size` custom element attribute or helper option selects the square dimension form. Use it alone, never with `width` or `height`. Accepted range: `16`-`2048`; logical area cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` custom element attribute or helper option selects the custom dimension form. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` custom element attribute or helper option selects the custom dimension form. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` custom element attribute or helper option selects the source encoding. Components and helpers default to SVG.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The `density` custom element attribute or helper option is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels; logical display dimensions do not change.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` custom element attribute or helper option sets the fill color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` custom element attribute or helper option sets the label color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` custom element attribute or helper option accepts up to `64` Unicode characters. Pass an empty string to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>
+
+<View title="PHP" icon="https://pictum.dev/v1/icons/skill-icons:php-light.svg">
+  <CodeGroup>
+    ```php URL
+    use Pictum\Pictum;
+
+    $pictum = new Pictum();
+    $url = $pictum->placeholder(
+        size: 320,
+        format: 'webp',
+        density: 2,
+        text: 'Coming soon',
+    )->url;
+    ```
+
+    ```php SVG
+    use Pictum\Pictum;
+
+    $pictum = new Pictum();
+    $svg = $pictum->placeholder(size: 320)->svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="size" type="integer">
+    The `size` named argument selects the square dimension form. Use it alone, never with `width` or `height`. Accepted range: `16`-`2048`; logical area cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` named argument selects the custom dimension form. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` named argument selects the custom dimension form. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` named argument selects the source encoding referenced by `->url`. The client defaults to SVG.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The `density` named argument is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels. Set explicit logical dimensions whenever the URL is rendered.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` named argument sets the fill color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` named argument sets the label color and must use `#rrggbb` or `#rrggbbaa` syntax.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` named argument accepts up to `64` Unicode characters. Pass an empty string to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>
+
+<View title="URL" icon="https://pictum.dev/v1/icons/tabler:protocol.svg">
+  ```text
+  https://pictum.dev/v1/placeholder.{format}?size={size}
+  https://pictum.dev/v1/placeholder.{format}?width={width}&height={height}
+  ```
+
+  #### Usage
+
+  ```html
+  <img
+    src="https://pictum.dev/v1/placeholder.svg?width=640&height=360&background=%23ede9fe&color=%234c1d95&text=Product+preview"
+    alt="Product preview placeholder"
+    width="640"
+    height="360"
+  />
+  ```
+
+  #### Parameters
+
+  <ResponseField name="size" type="integer">
+    The `size` query parameter creates a square from `16` to `2048` pixels. Provide exactly `size`, or both `width` and `height`, never both forms.
+  </ResponseField>
+
+  <ResponseField name="width" type="integer">
+    The `width` query parameter creates a custom-dimension placeholder. Provide it with `height`, never with `size`. Accepted range: `16`-`4096`.
+  </ResponseField>
+
+  <ResponseField name="height" type="integer">
+    The `height` query parameter creates a custom-dimension placeholder. Provide it with `width`, never with `size`. Accepted range: `16`-`4096`; logical width multiplied by height cannot exceed `4,194,304` pixels.
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' required>
+    The path extension selects the response encoding.
+  </ResponseField>
+
+  <ResponseField name="density" type="2 | 3" default="standard density">
+    The optional `density` query parameter is only valid for JPG, PNG, and WebP. Omit it for standard density. After applying density, each source axis cannot exceed `4096` pixels and source area cannot exceed `4,194,304` pixels. Set explicit logical `width` and `height` attributes when rendering the URL.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#f1eef8">
+    The `background` query parameter sets the fill color. Use a six- or eight-digit hex color with or without `#`; encode `#` as `%23` in a URL.
+  </ResponseField>
+
+  <ResponseField name="color" type="string" default="#6d28d9">
+    The `color` query parameter sets the label color. Use a six- or eight-digit hex color with or without `#`; encode `#` as `%23` in a URL.
+  </ResponseField>
+
+  <ResponseField name="text" type="string" default="width x height">
+    The `text` query parameter accepts up to `64` Unicode characters and must be URL-encoded. Use an empty value to suppress the label. The label is omitted when logical width is below `96` or logical height is below `64`.
+
+    <Warning>
+      Text may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+</View>

@@ -1,0 +1,108 @@
+{
+	"$schema": "https://mintlify.com/docs.json",
+	"theme": "mint",
+	"name": "Pictum",
+	"colors": {
+		"primary": "#6d28d9",
+		"light": "#a78bfa",
+		"dark": "#8b5cf6"
+	},
+	"logo": {
+		"dark": "/pictum-full.svg",
+		"light": "/pictum-full.svg"
+	},
+	"icons": {
+		"library": "lucide"
+	},
+	"navigation": {
+		"tabs": [
+			{
+				"tab": "Documentation",
+				"icon": "book-open",
+				"groups": [
+					{
+						"group": "Getting started",
+						"pages": ["index", "quickstart"]
+					},
+					{
+						"group": "Assets",
+						"pages": [
+							"guides/icons",
+							"guides/avatars",
+							"guides/qr-codes",
+							"guides/placeholders"
+						]
+					},
+					{
+						"group": "Integrations",
+						"pages": [
+							"integrations/react",
+							"integrations/vue",
+							"integrations/svelte",
+							"integrations/astro",
+							"integrations/laravel",
+							{
+								"group": "Standalone",
+								"icon": "code-xml",
+								"expanded": false,
+								"pages": [
+									"integrations/javascript",
+									"integrations/web-components",
+									"integrations/php"
+								]
+							}
+						]
+					},
+					{
+						"group": "Reference",
+						"pages": ["reference/caching"]
+					}
+				]
+			},
+			{
+				"tab": "API reference",
+				"icon": "square-terminal",
+				"openapi": "openapi.yaml",
+				"pages": [
+					"api-reference/overview",
+					{
+						"group": "Icons",
+						"pages": [
+							"GET /v1/icons.json",
+							"GET /v1/icons/{prefix}.json",
+							"GET /v1/icons/{prefix}:{name}.svg"
+						]
+					},
+					{
+						"group": "Avatars",
+						"pages": ["GET /v1/avatar.{format}"]
+					},
+					{
+						"group": "QR codes",
+						"pages": ["GET /v1/qrcode.{format}"]
+					},
+					{
+						"group": "Placeholders",
+						"pages": ["GET /v1/placeholder.{format}"]
+					}
+				]
+			}
+		]
+	},
+	"navbar": {
+		"links": [
+			{
+				"label": "GitHub",
+				"href": "https://github.com/usepictum/pictum",
+				"icon": "github"
+			}, {
+				"label": "Discord",
+				"href": "https://discord.gg/uCncQfhNmw",
+				"icon": "discord"
+			}
+		]
+	},
+	"contextual": {
+		"options": ["copy", "download-spec", "chatgpt", "claude"]
+	}
+}
