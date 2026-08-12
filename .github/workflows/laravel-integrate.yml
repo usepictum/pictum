@@ -1,0 +1,107 @@
+name: Laravel Integration
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: Detect Laravel changes
+    runs-on: ubuntu-24.04
+    outputs:
+      laravel: ${{ steps.changes.outputs.laravel }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Detect Laravel changes
+        id: changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git diff --quiet "$BASE_SHA...$HEAD_SHA" -- \
+            integrations/laravel \
+            integrations/php \
+            '.github/workflows/laravel-*.yml' \
+            .github/cliff/laravel \
+            scripts/sync-laravel-subtree.sh; then
+            echo "laravel=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "laravel=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  title:
+    name: Conventional Commit
+    needs: changes
+    if: needs.changes.outputs.laravel == 'true'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Validate pull request title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^[a-zA-Z]+(\([^()]+\))?!?: .+'
+          if [[ ! "$TITLE" =~ $pattern ]]; then
+            echo "Pull request titles must use Conventional Commit syntax." >&2
+            echo "Example: feat(laravel): add an asset component" >&2
+            exit 1
+          fi
+
+          lower="${TITLE,,}"
+          if [[ "$lower" =~ \[(skip\ ci|ci\ skip|no\ ci|skip\ actions|actions\ skip)\] ]]; then
+            echo "Pull request titles must not contain a workflow skip directive." >&2
+            exit 1
+          fi
+
+  quality:
+    name: Quality
+    needs: changes
+    if: needs.changes.outputs.laravel == 'true'
+    uses: ./.github/workflows/laravel-quality.yml
+    with:
+      ref: ${{ github.sha }}
+
+  test:
+    name: Tests
+    needs: changes
+    if: needs.changes.outputs.laravel == 'true'
+    uses: ./.github/workflows/laravel-test.yml
+    with:
+      ref: ${{ github.sha }}
+
+  integrate:
+    name: Laravel Checks
+    needs: [changes, title, quality, test]
+    if: always()
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          LARAVEL_CHANGED: ${{ needs.changes.outputs.laravel }}
+          QUALITY_RESULT: ${{ needs.quality.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != "success" ]]; then
+            echo "Laravel change detection failed." >&2
+            exit 1
+          fi
+
+          if [[ "$LARAVEL_CHANGED" == "true" ]] && \
+             [[ "$TITLE_RESULT" != "success" || \
+                "$QUALITY_RESULT" != "success" || \
+                "$TEST_RESULT" != "success" ]]; then
+            echo "One or more Laravel integration checks failed." >&2
+            exit 1
+          fi
