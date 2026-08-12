@@ -1,0 +1,78 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "pictum/laravel",
+    "description": "Laravel integration for Pictum assets.",
+    "type": "library",
+    "keywords": [
+        "assets",
+        "avatars",
+        "icons",
+        "laravel",
+        "placeholders",
+        "qr-codes"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Hedger",
+            "email": "nicolas@hedger.ch"
+        }
+    ],
+    "homepage": "https://github.com/usepictum/pictum/tree/main/integrations/laravel",
+    "support": {
+        "issues": "https://github.com/usepictum/pictum/issues",
+        "source": "https://github.com/usepictum/pictum/tree/main/integrations/laravel"
+    },
+    "require": {
+        "php": "^8.2",
+        "illuminate/cache": "^12.0 || ^13.0",
+        "illuminate/config": "^12.0 || ^13.0",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
+        "illuminate/view": "^12.0 || ^13.0",
+        "pictum/pictum": "^0.1.0"
+    },
+    "require-dev": {
+        "carthage-software/mago": "^1.46",
+        "guzzlehttp/guzzle": "^7.9",
+        "laravel/pint": "^1.27",
+        "orchestra/testbench": "^10.8 || ^11.0",
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pictum\\Laravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Pictum\\Laravel\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "analyse": "mago analyze",
+        "format": "pint",
+        "format:test": "pint --test",
+        "test": "phpunit --colors=always",
+        "check": [
+            "@format:test",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Pictum\\Laravel\\PictumServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        },
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
