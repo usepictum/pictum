@@ -1,0 +1,81 @@
+---
+title: "Pictum"
+description: "Visual assets for every stack"
+icon: "/pictum.svg"
+---
+
+import { HomeAssetShowcase } from "/snippets/homepage.jsx";
+
+Render 330,000+ icons, deterministic avatars, QR codes, and placeholders from one free, [open-source](https://github.com/usepictum) API. Use native components and helpers in your stack, or ship cacheable `https://pictum.dev/v1` URLs directly.
+
+<div className="not-prose mt-6 flex flex-col gap-3 sm:flex-row">
+  <a
+    href="/quickstart"
+    className="inline-flex min-h-11 items-center justify-center rounded-lg bg-violet-700 px-5 py-2.5 text-sm font-semibold text-white no-underline shadow-sm transition-colors duration-150 hover:bg-violet-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-600 focus-visible:ring-offset-2 dark:bg-violet-400 dark:text-violet-950 dark:hover:bg-violet-300 dark:focus-visible:ring-violet-400 dark:focus-visible:ring-offset-zinc-950"
+  >
+    Start with your stack
+  </a>
+  <a
+    href="#assets"
+    className="inline-flex min-h-11 items-center justify-center rounded-lg border border-zinc-950/15 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-900 no-underline transition-colors duration-150 hover:border-violet-400 hover:text-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-600 focus-visible:ring-offset-2 dark:border-white/15 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:border-violet-500 dark:hover:text-violet-300 dark:focus-visible:ring-violet-400 dark:focus-visible:ring-offset-zinc-950"
+  >
+    Explore assets
+  </a>
+</div>
+
+## Assets
+
+Each preview is served live from the Pictum API.
+
+<HomeAssetShowcase />
+
+## Works with your stack
+
+Use a package for your framework or language, browser-native elements, or direct HTTP.
+
+<Columns cols={2}>
+  <Card title="React" icon="https://pictum.dev/v1/icons/devicon:react.svg" href="/integrations/react">
+    One less thing to memoize
+  </Card>
+  <Card title="Vue" icon="https://pictum.dev/v1/icons/devicon:vuejs.svg" href="/integrations/vue">
+    Assets look better from this Vue
+  </Card>
+  <Card title="Svelte" icon="https://pictum.dev/v1/icons/devicon:svelte.svg" href="/integrations/svelte">
+    Tiny assets, very Svelte
+  </Card>
+  <Card title="Astro" icon="/icons/astro.svg" href="/integrations/astro">
+    Houston, we have an asset
+  </Card>
+  <Card title="Laravel" icon="https://pictum.dev/v1/icons/devicon:laravel.svg" href="/integrations/laravel">
+    Blade sharp, assets sharper
+  </Card>
+  <Card title="JavaScript" icon="https://pictum.dev/v1/icons/devicon:javascript.svg" href="/integrations/javascript">
+    No `[object Object]` in sight
+  </Card>
+  <Card title="Web Components" icon="https://pictum.dev/v1/icons/devicon:html5.svg" href="/integrations/web-components">
+    Straight out of the shadow DOM
+  </Card>
+  <Card title="PHP" icon="https://pictum.dev/v1/icons/skill-icons:php-light.svg" href="/integrations/php">
+    Composer made us do it
+  </Card>
+  <Card title="Direct HTTP" icon="/icons/protocol.svg" href="/api-reference/overview">
+    GET your assets together
+  </Card>
+</Columns>
+
+## Built for production
+
+<Columns cols={2}>
+  <Card title="One contract" icon="equal">
+    Keep the same identifiers and options across integrations.
+  </Card>
+  <Card title="Cache-ready" icon="database" href="/reference/caching">
+    Reuse responses in browsers and at the edge with public cache headers and ETags.
+  </Card>
+  <Card title="SSR and CSR" icon="panels-top-left">
+    Each package supports the rendering modes documented in its integration guide.
+  </Card>
+  <Card title="Free and open source" icon="github" href="https://github.com/usepictum">
+    Self-host Pictum, inspect the source, or contribute on GitHub.
+  </Card>
+</Columns>

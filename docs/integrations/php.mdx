@@ -1,0 +1,145 @@
+---
+title: "PHP"
+description: "Use the Pictum asset client with framework-free PHP."
+icon: "https://pictum.dev/v1/icons/skill-icons:php-light.svg"
+---
+
+## Installation
+
+Pictum requires PHP 8.2 or newer. Install the package and a discoverable PSR-18/PSR-17 implementation such as Guzzle.
+
+```bash
+composer require pictum/pictum guzzlehttp/guzzle
+```
+
+## Agent skill
+
+Install the PHP integration skill for coding agents that support Agent Skills:
+
+```bash
+npx skills add usepictum/skills@php
+```
+
+Create one client and reuse it. Reading an asset's `url` property makes no network request; calling `svg()` performs a synchronous HTTP request for canonical SVG markup.
+
+```php
+use Pictum\Pictum;
+
+$pictum = new Pictum();
+```
+
+## Icons
+
+Render SVG markup directly for HTML output, or read the asset URL when another service needs it.
+
+<CodeGroup>
+  ```php Render
+  echo $pictum->icon('devicon:php')->svg();
+  ```
+
+  ```php Client
+  // Generate the URL without making a request.
+  $url = $pictum->icon('devicon:php')->url;
+
+  // Fetch canonical SVG markup.
+  $svg = $pictum->icon('devicon:php')->svg();
+  ```
+</CodeGroup>
+
+## Avatars
+
+Generate portrait and generated avatar URLs with the framework-independent client. Only generated avatars provide canonical SVG markup.
+
+<CodeGroup>
+  ```php Render
+  echo $pictum->avatar('ada-lovelace')->svg();
+  ```
+
+  ```php Client
+  // Generate the URL without making a request.
+  $url = $pictum->avatar(
+      'customer-123',
+      variant: 'portrait',
+      gender: 'female',
+      size: 256,
+  )->url;
+
+  // Fetch canonical SVG markup.
+  $svg = $pictum->avatar(
+      'ada-lovelace',
+      variant: 'monogram',
+  )->svg();
+  ```
+</CodeGroup>
+
+The optional `size` requests a square raster source from 16 to 1024 pixels.
+
+## QR codes
+
+Render canonical SVG markup directly, or select a raster format, quiet-zone behavior, and RGB or RGBA colors.
+
+<CodeGroup>
+  ```php Render
+  echo $pictum->qrCode('https://pictum.dev')->svg();
+  ```
+
+  ```php Client
+  // Generate the URL without making a request.
+  $url = $pictum->qrCode(
+      'https://pictum.dev',
+      format: 'svg',
+      quietZone: false,
+      foreground: '#4c1d95ff',
+      background: '#ede9fe',
+  )->url;
+
+  // Fetch canonical SVG markup.
+  $svg = $pictum->qrCode('https://pictum.dev')->svg();
+  ```
+</CodeGroup>
+
+## Placeholders
+
+Render a square as canonical SVG markup, or use custom dimensions when you need another aspect ratio.
+
+<CodeGroup>
+  ```php Render
+  echo $pictum->placeholder(
+      size: 320,
+      background: '#ffffff',
+      color: '#6d28d9',
+      text: 'Coming soon',
+  )->svg();
+  ```
+
+  ```php Client
+  // Generate a custom-dimension URL without making a request.
+  $url = $pictum->placeholder(
+      width: 640,
+      height: 360,
+      format: 'webp',
+      density: 3,
+      text: 'Coming soon',
+  )->url;
+
+  // Fetch a square as canonical SVG markup.
+  $svg = $pictum->placeholder(
+      size: 320,
+      text: 'Coming soon',
+  )->svg();
+  ```
+</CodeGroup>
+
+## Configure the client
+
+Pass a custom base URL to the constructor to configure every asset, or use the `baseUrl` named argument on one method call. You can also inject your own `ClientInterface` and `RequestFactoryInterface` implementations.
+
+```php
+use Pictum\Pictum;
+
+$pictum = new Pictum(
+    baseUrl: 'https://assets.example.com/v1',
+);
+```
+
+Methods also accept the exported format, variant, and gender enums instead of strings. Generated avatars default to `monogram` and SVG. Portrait avatars default to WebP and do not support `svg()`.

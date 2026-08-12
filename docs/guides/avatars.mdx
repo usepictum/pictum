@@ -1,0 +1,508 @@
+---
+title: "Avatars"
+description: "Generate deterministic avatars with native components, helpers, or URLs."
+icon: "user"
+---
+
+import { AvatarPreviewer } from "/snippets/avatar-previewer.jsx";
+import { AvatarVariantGallery } from "/snippets/avatar-variant-gallery.jsx";
+
+<AvatarPreviewer />
+
+<Info>
+  Generated variants return the same image for the same seed and options. Portraits are stable for the same seed and gender within the current catalog. Catalog updates are infrequent, but can remap a seed.
+</Info>
+
+## Variants
+
+Compare the four avatar styles below, then try them in the live preview above.
+
+<AvatarVariantGallery />
+
+## Usage
+
+<View title="React" icon="https://pictum.dev/v1/icons/devicon:react.svg">
+  <CodeGroup>
+    ```tsx Component
+    import { Avatar } from "@pictum/react";
+
+    <Avatar
+      seed="customer-123"
+      variant="portrait"
+      gender="female"
+      size={256}
+      alt="Customer"
+      className="size-10"
+    />
+    ```
+
+    ```tsx Hook
+    import { useAvatar } from "@pictum/react";
+
+    export function CustomerAvatar() {
+      const asset = useAvatar("customer-123", {
+        variant: "portrait",
+        gender: "female",
+        size: 256,
+      });
+
+      return <img src={asset.url} alt="Customer" className="size-10" />;
+    }
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="seed" type="string" required>
+    The `seed` prop is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` prop chooses the visual strategy used to produce the avatar: identicon, gradient, monogram, or portrait. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    For portraits, the `gender` prop limits catalog selection; `any` uses the full catalog, and the prop does not apply to generated variants. Example: `female` limits selection to female portraits.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' default="svg; portrait: webp">
+    The `format` prop controls how the avatar `src` is encoded; generated variants support SVG and raster output, while portraits are raster-only. Example: `webp` requests a WebP source.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` prop requests an exact square raster source. Display dimensions remain controlled by `width`, `height`, or CSS. Accepted range: `16`-`1024`. Example: `256`.
+  </ResponseField>
+</View>
+
+<View title="Vue" icon="https://pictum.dev/v1/icons/devicon:vuejs.svg">
+  <CodeGroup>
+    ```vue Component
+    <script setup lang="ts">
+    import { Avatar } from "@pictum/vue";
+    </script>
+
+    <template>
+      <Avatar
+        seed="customer-123"
+        variant="portrait"
+        gender="female"
+        :size="256"
+        alt="Customer"
+        class="size-10"
+      />
+    </template>
+    ```
+
+    ```vue Composable
+    <script setup lang="ts">
+    import { useAvatar } from "@pictum/vue";
+
+    const asset = useAvatar("customer-123", {
+      variant: "portrait",
+      gender: "female",
+      size: 256,
+    });
+    </script>
+
+    <template>
+      <img :src="asset.url" alt="Customer" class="size-10" />
+    </template>
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="seed" type="string" required>
+    The `seed` prop is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` prop chooses the visual strategy used to produce the avatar: identicon, gradient, monogram, or portrait. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    For portraits, the `gender` prop limits catalog selection; `any` uses the full catalog, and the prop does not apply to generated variants. Example: `female` limits selection to female portraits.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' default="svg; portrait: webp">
+    The `format` prop controls how the avatar `src` is encoded; generated variants support SVG and raster output, while portraits are raster-only. Example: `webp` requests a WebP source.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` prop requests an exact square raster source. Display dimensions remain controlled by `width`, `height`, or CSS. Accepted range: `16`-`1024`. Example: `256`.
+  </ResponseField>
+</View>
+
+<View title="Svelte" icon="https://pictum.dev/v1/icons/devicon:svelte.svg">
+  <CodeGroup>
+    ```svelte Component
+    <script lang="ts">
+      import { Avatar } from "@pictum/svelte";
+    </script>
+
+    <Avatar
+      seed="customer-123"
+      variant="portrait"
+      gender="female"
+      size={256}
+      alt="Customer"
+      class="size-10"
+    />
+    ```
+
+    ```svelte Helper
+    <script lang="ts">
+      import { useAvatar } from "@pictum/svelte";
+
+      const asset = useAvatar("customer-123", {
+        variant: "portrait",
+        gender: "female",
+        size: 256,
+      });
+    </script>
+
+    <img src={asset.current.url} alt="Customer" class="size-10" />
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="seed" type="string" required>
+    The `seed` prop is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` prop chooses the visual strategy used to produce the avatar: identicon, gradient, monogram, or portrait. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    For portraits, the `gender` prop limits catalog selection; `any` uses the full catalog, and the prop does not apply to generated variants. Example: `female` limits selection to female portraits.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' default="svg; portrait: webp">
+    The `format` prop controls how the avatar `src` is encoded; generated variants support SVG and raster output, while portraits are raster-only. Example: `webp` requests a WebP source.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` prop requests an exact square raster source. Display dimensions remain controlled by `width`, `height`, or CSS. Accepted range: `16`-`1024`. Example: `256`.
+  </ResponseField>
+</View>
+
+<View title="Astro" icon="https://pictum.dev/v1/icons/devicon:astro.svg">
+  <CodeGroup>
+    ```astro Component
+    ---
+    import { Avatar } from "@pictum/astro/components";
+    ---
+
+    <Avatar
+      seed="customer-123"
+      variant="portrait"
+      gender="female"
+      size={256}
+      alt="Customer"
+      class="size-10"
+    />
+    ```
+
+    ```ts Helper
+    import { avatar } from "@pictum/astro";
+
+    const url = avatar("customer-123", {
+      variant: "portrait",
+      gender: "female",
+      size: 256,
+    }).url;
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="seed" type="string" required>
+    The `seed` prop is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` prop chooses the visual strategy used to produce the avatar: identicon, gradient, monogram, or portrait. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    For portraits, the `gender` prop limits catalog selection; `any` uses the full catalog, and the prop does not apply to generated variants. Example: `female` limits selection to female portraits.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' default="svg; portrait: webp">
+    The `format` prop controls how the avatar `src` is encoded; generated variants support SVG and raster output, while portraits are raster-only. Example: `webp` requests a WebP source.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` prop requests an exact square raster source. Display dimensions remain controlled by `width`, `height`, or CSS. Accepted range: `16`-`1024`. Example: `256`.
+  </ResponseField>
+</View>
+
+<View title="Laravel" icon="https://pictum.dev/v1/icons/devicon:laravel.svg">
+  <CodeGroup>
+    ```blade Component
+    <x-pictum::avatar
+      seed="customer-123"
+      variant="portrait"
+      gender="female"
+      :size="256"
+      alt="Customer"
+      class="size-10"
+    />
+    ```
+
+    ```php Facade
+    use Pictum\Laravel\Facades\Pictum;
+
+    $url = Pictum::avatar(
+        'customer-123',
+        variant: 'portrait',
+        gender: 'female',
+        size: 256,
+    )->url;
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="seed" type="string" required>
+    The `seed` Blade component attribute is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` Blade component attribute chooses the visual strategy used to produce the avatar: identicon, gradient, monogram, or portrait. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    For portraits, the `gender` Blade component attribute limits catalog selection; `any` uses the full catalog, and the attribute does not apply to generated variants. Example: `female` limits selection to female portraits.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' default="svg; portrait: webp">
+    The `format` Blade component attribute controls how the avatar `src` is encoded; generated variants support SVG and raster output, while portraits are raster-only. Example: `webp` requests a WebP source.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` Blade component attribute requests an exact square raster source. Display dimensions remain controlled by `width`, `height`, or CSS. Accepted range: `16`-`1024`. Example: `256`.
+  </ResponseField>
+</View>
+
+<View title="JavaScript" icon="https://pictum.dev/v1/icons/devicon:javascript.svg">
+  <CodeGroup>
+    ```ts URL
+    import { avatar } from "pictum";
+
+    const url = avatar("customer-123", {
+      variant: "portrait",
+      gender: "female",
+      size: 256,
+    }).url;
+    ```
+
+    ```ts SVG
+    import { avatar } from "pictum";
+
+    const svg = await avatar("customer-123", {
+      variant: "monogram",
+    }).svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="seed" type="string" required>
+    The `seed` helper argument is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` option chooses the visual strategy used to produce the avatar: identicon, gradient, monogram, or portrait. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    For portraits, the `gender` option limits catalog selection; `any` uses the full catalog, and the option does not apply to generated variants. Example: `female` limits selection to female portraits.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' default="svg; portrait: webp">
+    The `format` option controls the image encoding referenced by the helper's `.url`; generated variants support SVG and raster output, while portraits are raster-only. Example: `webp` requests a WebP source.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` option requests an exact square raster source. Display dimensions remain controlled by `width`, `height`, or CSS. Accepted range: `16`-`1024`. Example: `256`.
+  </ResponseField>
+</View>
+
+<View title="Web Components" icon="https://pictum.dev/v1/icons/devicon:html5.svg">
+  <CodeGroup>
+    ```html Component
+    <script type="module">
+      import { definePictumElements } from "@pictum/web";
+
+      definePictumElements();
+    </script>
+
+    <pictum-avatar
+      seed="customer-123"
+      variant="portrait"
+      gender="female"
+      size="256"
+      alt="Customer"
+      class="size-10"
+    ></pictum-avatar>
+    ```
+
+    ```ts Helper
+    import { avatar } from "@pictum/web";
+
+    const url = avatar("customer-123", {
+      variant: "portrait",
+      gender: "female",
+      size: 256,
+    }).url;
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="seed" type="string" required>
+    The `seed` custom element attribute is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` custom element attribute chooses the visual strategy used to produce the avatar: identicon, gradient, monogram, or portrait. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    For portraits, the `gender` custom element attribute limits catalog selection; `any` uses the full catalog, and the attribute does not apply to generated variants. Example: `female` limits selection to female portraits.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' default="svg; portrait: webp">
+    The `format` custom element attribute controls how the avatar `src` is encoded; generated variants support SVG and raster output, while portraits are raster-only. Example: `webp` requests a WebP source.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` custom element attribute requests an exact square raster source. Display dimensions remain controlled by `width`, `height`, or CSS. Accepted range: `16`-`1024`. Example: `256`.
+  </ResponseField>
+</View>
+
+<View title="PHP" icon="https://pictum.dev/v1/icons/skill-icons:php-light.svg">
+  <CodeGroup>
+    ```php URL
+    use Pictum\Pictum;
+
+    $pictum = new Pictum();
+    $url = $pictum->avatar(
+        'customer-123',
+        variant: 'portrait',
+        gender: 'female',
+        size: 256,
+    )->url;
+    ```
+
+    ```php SVG
+    use Pictum\Pictum;
+
+    $pictum = new Pictum();
+    $svg = $pictum->avatar(
+        'customer-123',
+        variant: 'monogram',
+    )->svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="seed" type="string" required>
+    The `seed` helper argument is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` named argument chooses the visual strategy used to produce the avatar: identicon, gradient, monogram, or portrait. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    For portraits, the `gender` named argument limits catalog selection; `any` uses the full catalog, and the argument does not apply to generated variants. Example: `female` limits selection to female portraits.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' default="svg; portrait: webp">
+    The `format` named argument controls the image encoding referenced by the helper's URL; generated variants support SVG and raster output, while portraits are raster-only. Example: `webp` requests a WebP source.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` named argument requests an exact square raster source. Display dimensions remain controlled by `width`, `height`, or CSS. Accepted range: `16`-`1024`. Example: `256`.
+  </ResponseField>
+</View>
+
+<View title="URL" icon="https://pictum.dev/v1/icons/tabler:protocol.svg">
+  ```text
+  https://pictum.dev/v1/avatar.{format}?seed={seed}&variant={variant}&gender={gender}&size={size}
+  ```
+
+  #### Usage
+
+  ```html
+  <img
+    src="https://pictum.dev/v1/avatar.webp?seed=customer-123&variant=portrait&gender=female&size=256"
+    alt="Customer"
+    width="40"
+    height="40"
+  />
+  ```
+
+  #### Parameters
+
+  <ResponseField name="seed" type="string" required>
+    The required `seed` query parameter is hashed to select the generated design or catalog portrait; reuse it to keep an avatar stable. It accepts `1`-`128` URL-safe ASCII characters, must start and end with a letter or number, and may otherwise contain letters, numbers, `.`, `_`, `~`, `@`, `+`, or `-`. Example: `customer-123`.
+
+    <Warning>
+      Seeds may be logged or cached. Never use sensitive data.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="variant" type='"identicon" | "gradient" | "monogram" | "portrait"' default="monogram">
+    The `variant` query parameter selects the visual strategy. Example: `portrait` selects a catalog photo.
+  </ResponseField>
+
+  <ResponseField name="gender" type='"any" | "male" | "female"' default="any">
+    The `gender` query parameter limits portrait selection. It is only valid when `variant=portrait`.
+  </ResponseField>
+
+  <ResponseField name="format" type='"jpg" | "png" | "webp" | "svg"' required>
+    The path extension controls the response encoding. Portraits support JPG, PNG, and WebP; generated variants also support SVG. Example: `webp`.
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    The `size` query parameter requests an exact square raster source from `16` to `1024` pixels. It is only valid for JPG, PNG, and WebP. Display dimensions remain controlled by `width`, `height`, or CSS.
+  </ResponseField>
+</View>

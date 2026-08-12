@@ -1,0 +1,501 @@
+---
+title: "QR codes"
+description: "Generate deterministic QR codes with native components, helpers, or URLs."
+icon: "qr-code"
+---
+
+import { QrCodePreviewer } from "/snippets/qr-code-previewer.jsx";
+
+<QrCodePreviewer />
+
+## Usage
+
+Integration components and helpers encode values for you. They do not expose raster source size; use `width`, `height`, or CSS to control display size. Colors use exact six-digit RGB or eight-digit RGBA hex values. SVG, PNG, and WebP preserve alpha, while JPEG composites transparency onto white.
+
+<View title="React" icon="https://pictum.dev/v1/icons/devicon:react.svg">
+  <CodeGroup>
+    ```tsx Component
+    import { QrCode } from "@pictum/react";
+
+    export function Example() {
+      return (
+        <QrCode
+          value="https://pictum.dev"
+          format="svg"
+          foreground="#4c1d95ff"
+          background="#ede9fe"
+          alt="Open Pictum"
+          className="size-40"
+        />
+      );
+    }
+    ```
+
+    ```tsx Hook
+    import { useQrCode } from "@pictum/react";
+
+    export function Example() {
+      const asset = useQrCode("https://pictum.dev", {
+        format: "svg",
+      });
+
+      return <img src={asset.url} alt="Open Pictum" className="size-40" />;
+    }
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="value" type="string" required>
+    The `value` prop or hook argument is the text or URL to encode. It must be valid UTF-8 containing `1`-`512` bytes.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` prop or option selects the image encoding. React does not expose raster source size; `width`, `height`, and CSS only control display size.
+  </ResponseField>
+
+  <ResponseField name="quietZone" type="boolean" default="true">
+    The `quietZone` prop or option includes the recommended clear space around the QR modules. Set it to `false` only when the surrounding layout supplies that space.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    The `foreground` prop or option sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    The `background` prop or option sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+</View>
+
+<View title="Vue" icon="https://pictum.dev/v1/icons/devicon:vuejs.svg">
+  <CodeGroup>
+    ```vue Component
+    <script setup lang="ts">
+    import { QrCode } from "@pictum/vue";
+    </script>
+
+    <template>
+      <QrCode
+        value="https://pictum.dev"
+        format="svg"
+        foreground="#4c1d95ff"
+        background="#ede9fe"
+        alt="Open Pictum"
+        class="size-40"
+      />
+    </template>
+    ```
+
+    ```vue Composable
+    <script setup lang="ts">
+    import { useQrCode } from "@pictum/vue";
+
+    const asset = useQrCode("https://pictum.dev", {
+      format: "svg",
+    });
+    </script>
+
+    <template>
+      <img :src="asset.url" alt="Open Pictum" class="size-40" />
+    </template>
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="value" type="string" required>
+    The `value` prop or composable argument is the text or URL to encode. It must be valid UTF-8 containing `1`-`512` bytes.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` prop or option selects the image encoding. Vue does not expose raster source size; `width`, `height`, and CSS only control display size.
+  </ResponseField>
+
+  <ResponseField name="quietZone" type="boolean" default="true">
+    The `quietZone` prop or option includes the recommended clear space around the QR modules. In templates, bind it as `:quiet-zone="false"` to disable it.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    The `foreground` prop or option sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    The `background` prop or option sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+</View>
+
+<View title="Svelte" icon="https://pictum.dev/v1/icons/devicon:svelte.svg">
+  <CodeGroup>
+    ```svelte Component
+    <script lang="ts">
+      import { QrCode } from "@pictum/svelte";
+    </script>
+
+    <QrCode
+      value="https://pictum.dev"
+      format="svg"
+      foreground="#4c1d95ff"
+      background="#ede9fe"
+      alt="Open Pictum"
+      class="size-40"
+    />
+    ```
+
+    ```svelte Helper
+    <script lang="ts">
+      import { useQrCode } from "@pictum/svelte";
+
+      const asset = useQrCode("https://pictum.dev", {
+        format: "svg",
+      });
+    </script>
+
+    <img src={asset.current.url} alt="Open Pictum" class="size-40" />
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="value" type="string" required>
+    The `value` prop or reactive helper argument is the text or URL to encode. It must be valid UTF-8 containing `1`-`512` bytes.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` prop or option selects the image encoding. Svelte does not expose raster source size; `width`, `height`, and CSS only control display size.
+  </ResponseField>
+
+  <ResponseField name="quietZone" type="boolean" default="true">
+    The `quietZone` prop or option includes the recommended clear space around the QR modules. Set it to `false` only when the surrounding layout supplies that space.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    The `foreground` prop or option sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    The `background` prop or option sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+</View>
+
+<View title="Astro" icon="https://pictum.dev/v1/icons/devicon:astro.svg">
+  <CodeGroup>
+    ```astro Component
+    ---
+    import { QrCode } from "@pictum/astro/components";
+    ---
+
+    <QrCode
+      value="https://pictum.dev"
+      format="svg"
+      foreground="#4c1d95ff"
+      background="#ede9fe"
+      alt="Open Pictum"
+      class="size-40"
+    />
+    ```
+
+    ```astro Helper
+    ---
+    import { qrCode } from "@pictum/astro";
+
+    const asset = qrCode("https://pictum.dev", {
+      format: "svg",
+    });
+    ---
+
+    <img src={asset.url} alt="Open Pictum" class="size-40" />
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="value" type="string" required>
+    The `value` prop or helper argument is the text or URL to encode. It must be valid UTF-8 containing `1`-`512` bytes.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` prop or option selects the image encoding. Astro does not expose raster source size; `width`, `height`, and CSS only control display size.
+  </ResponseField>
+
+  <ResponseField name="quietZone" type="boolean" default="true">
+    The `quietZone` prop or option includes the recommended clear space around the QR modules. Set it to `false` only when the surrounding layout supplies that space.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    The `foreground` prop or option sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    The `background` prop or option sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+</View>
+
+<View title="Laravel" icon="https://pictum.dev/v1/icons/devicon:laravel.svg">
+  <CodeGroup>
+    ```blade Component
+    <x-pictum::qr-code
+      value="https://pictum.dev"
+      format="svg"
+      foreground="#4c1d95ff"
+      background="#ede9fe"
+      alt="Open Pictum"
+      class="size-40"
+    />
+    ```
+
+    ```php Facade
+    use Pictum\Laravel\Facades\Pictum;
+
+    $url = Pictum::qrCode(
+        'https://pictum.dev',
+        format: 'svg',
+        quietZone: false,
+    )->url;
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="value" type="string" required>
+    The `value` Blade component attribute or facade argument is the text or URL to encode. It must be valid UTF-8 containing `1`-`512` bytes.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` Blade component attribute or named argument selects the image encoding. Laravel does not expose raster source size; `width`, `height`, and CSS only control display size.
+  </ResponseField>
+
+  <ResponseField name="quietZone" type="boolean" default="true">
+    The `quietZone` named argument includes the recommended clear space around the QR modules. On the Blade component, use the `quiet-zone` attribute.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    The `foreground` named argument sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format. On the Blade component, use the `foreground` attribute.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    The `background` named argument sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format. On the Blade component, use the `background` attribute.
+  </ResponseField>
+</View>
+
+<View title="JavaScript" icon="https://pictum.dev/v1/icons/devicon:javascript.svg">
+  <CodeGroup>
+    ```ts URL
+    import { qrCode } from "pictum";
+
+    const url = qrCode("https://pictum.dev", {
+      format: "svg",
+      foreground: "#4c1d95ff",
+      background: "#ede9fe",
+    }).url;
+    ```
+
+    ```ts SVG
+    import { qrCode } from "pictum";
+
+    const svg = await qrCode("https://pictum.dev", {
+      quietZone: false,
+    }).svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="value" type="string" required>
+    The `value` helper argument is the text or URL to encode. It must be valid UTF-8 containing `1`-`512` bytes.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` option selects the image encoding referenced by `.url`. The helper does not expose raster source size; when rendered, `width`, `height`, and CSS only control display size.
+  </ResponseField>
+
+  <ResponseField name="quietZone" type="boolean" default="true">
+    The `quietZone` option includes the recommended clear space around the QR modules. Set it to `false` only when the surrounding layout supplies that space.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    The `foreground` option sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    The `background` option sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+</View>
+
+<View title="Web Components" icon="https://pictum.dev/v1/icons/devicon:html5.svg">
+  <CodeGroup>
+    ```html Component
+    <script type="module">
+      import { definePictumElements } from "@pictum/web";
+
+      definePictumElements();
+    </script>
+
+    <pictum-qr-code
+      value="https://pictum.dev"
+      format="svg"
+      foreground="#4c1d95ff"
+      background="#ede9fe"
+      alt="Open Pictum"
+      class="size-40"
+    ></pictum-qr-code>
+    ```
+
+    ```ts Helper
+    import { qrCode } from "@pictum/web";
+
+    const url = qrCode("https://pictum.dev", {
+      format: "svg",
+      quietZone: false,
+    }).url;
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="value" type="string" required>
+    The `value` custom element attribute or helper argument is the text or URL to encode. It must be valid UTF-8 containing `1`-`512` bytes.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` attribute or option selects the image encoding. The web package does not expose raster source size; `width`, `height`, and CSS only control display size.
+  </ResponseField>
+
+  <ResponseField name="quietZone" type="boolean" default="true">
+    The `quietZone` option includes the recommended clear space around the QR modules. On the custom element, use `quiet-zone="false"` to disable it.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    The `foreground` option sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format. On the custom element, use the `foreground` attribute.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    The `background` option sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format. On the custom element, use the `background` attribute.
+  </ResponseField>
+</View>
+
+<View title="PHP" icon="https://pictum.dev/v1/icons/skill-icons:php-light.svg">
+  <CodeGroup>
+    ```php URL
+    use Pictum\Pictum;
+
+    $pictum = new Pictum();
+    $url = $pictum->qrCode(
+        'https://pictum.dev',
+        format: 'svg',
+        foreground: '#4c1d95ff',
+        background: '#ede9fe',
+    )->url;
+    ```
+
+    ```php SVG
+    use Pictum\Pictum;
+
+    $pictum = new Pictum();
+    $svg = $pictum->qrCode(
+        'https://pictum.dev',
+        quietZone: false,
+    )->svg();
+    ```
+  </CodeGroup>
+
+  #### Props
+
+  <ResponseField name="value" type="string" required>
+    The `value` client method argument is the text or URL to encode. It must be valid UTF-8 containing `1`-`512` bytes.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' default="svg">
+    The `format` named argument selects the image encoding referenced by `->url`. The client does not expose raster source size; when rendered, `width`, `height`, and CSS only control display size.
+  </ResponseField>
+
+  <ResponseField name="quietZone" type="boolean" default="true">
+    The `quietZone` named argument includes the recommended clear space around the QR modules. Set it to `false` only when the surrounding layout supplies that space.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    The `foreground` named argument sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    The `background` named argument sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format.
+  </ResponseField>
+</View>
+
+<View title="URL" icon="https://pictum.dev/v1/icons/tabler:protocol.svg">
+  ```text
+  https://pictum.dev/v1/qrcode.{format}?data={base64}&foreground={color}&background={color}
+  ```
+
+  #### Usage
+
+  ```html
+  <img
+    src="https://pictum.dev/v1/qrcode.svg?data=aHR0cHM6Ly9waWN0dW0uZGV2&foreground=%234c1d95ff&background=%23ede9fe"
+    alt="Open Pictum"
+    width="160"
+    height="160"
+  />
+  ```
+
+  #### Parameters
+
+  <ResponseField name="format" type='"svg" | "jpg" | "png" | "webp"' required>
+    The path extension selects the response encoding. SVG is dimensionless; raster formats use the requested `size`.
+  </ResponseField>
+
+  <ResponseField name="data" type="string" required>
+    The `data` query parameter is the standard padded Base64 encoding of a valid UTF-8 value containing `1`-`512` decoded bytes. URL-encode the Base64 when building the request. Base64 is not encryption.
+
+    <Warning>
+      Values may appear in logs and public, cacheable URLs. Do not use sensitive information.
+    </Warning>
+  </ResponseField>
+
+  <ResponseField name="size" type="integer" default="256">
+    Requests an exact square raster source from `64` to `2048` pixels. It is ignored for SVG, and HTML attributes or CSS control display size independently.
+  </ResponseField>
+
+  <ResponseField name="quiet_zone" type='"true" | "false" | "1" | "0"' default="true">
+    Includes the recommended clear space around the QR modules. Use `false` or `0` to disable it; use `true` or `1` to enable it.
+  </ResponseField>
+
+  <ResponseField name="foreground" type="string" default="#000000ff">
+    Sets the QR module color in exact `#rrggbb` or `#rrggbbaa` format. URL-encode the leading `#` as `%23`.
+  </ResponseField>
+
+  <ResponseField name="background" type="string" default="#00000000">
+    Sets the QR background color in exact `#rrggbb` or `#rrggbbaa` format. URL-encode the leading `#` as `%23`.
+  </ResponseField>
+</View>

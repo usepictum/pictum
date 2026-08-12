@@ -1,0 +1,234 @@
+---
+title: "Vue"
+description: "Use Pictum icon, avatar, QR code, and placeholder interfaces with Vue."
+icon: "https://pictum.dev/v1/icons/devicon:vuejs.svg"
+---
+
+<Badge icon="server" color="green" stroke className="rendering-badge">SSR</Badge>
+<Badge icon="monitor" color="green" stroke className="rendering-badge">CSR</Badge>
+
+## Installation
+
+Install the Vue 3.5+ package with your preferred package manager.
+
+<CodeGroup>
+  ```bash npm
+  npm install @pictum/vue
+  ```
+
+  ```bash pnpm
+  pnpm add @pictum/vue
+  ```
+
+  ```bash bun
+  bun add @pictum/vue
+  ```
+
+  ```bash yarn
+  yarn add @pictum/vue
+  ```
+</CodeGroup>
+
+## Agent skill
+
+Install the Vue integration skill for coding agents that support Agent Skills:
+
+```bash
+npx skills add usepictum/skills@vue
+```
+
+## Icons
+
+Render an icon in a template with `Icon`, or use `icon()` when you need its URL or SVG markup in script code.
+
+<CodeGroup>
+  ```vue Component
+  <script setup lang="ts">
+  import { Icon } from "@pictum/vue";
+  </script>
+
+  <template>
+    <Icon
+      name="devicon:vuejs"
+      aria-label="Vue"
+      class="size-6"
+    />
+  </template>
+  ```
+
+  ```ts Helper
+  import { icon } from "@pictum/vue";
+
+  // Generate the URL without making a request.
+  const url = icon("devicon:vuejs").url;
+
+  // Fetch canonical SVG markup.
+  const svg = await icon("devicon:vuejs").svg();
+  ```
+</CodeGroup>
+
+`Icon` fetches and caches canonical SVG markup behind an internal Suspense boundary. Vue's server renderer waits for the icon before emitting the completed inline SVG.
+
+## Avatars
+
+Render a generated avatar or portrait with `Avatar`, or use `avatar()` to pass the selected image URL to another service. Generated avatars also provide canonical SVG markup.
+
+<CodeGroup>
+  ```vue Component
+  <script setup lang="ts">
+  import { Avatar } from "@pictum/vue";
+  </script>
+
+  <template>
+    <Avatar
+      seed="customer-123"
+      variant="portrait"
+      gender="female"
+      format="webp"
+      :size="256"
+      alt="Customer"
+      class="size-10"
+    />
+  </template>
+  ```
+
+  ```ts Helper
+  import { avatar } from "@pictum/vue";
+
+  // Generate the URL without making a request.
+  const url = avatar("customer-123", {
+    variant: "portrait",
+    gender: "female",
+    format: "webp",
+  }).url;
+
+  // Fetch canonical SVG markup.
+  const svg = await avatar("ada-lovelace", {
+    variant: "monogram",
+  }).svg();
+  ```
+</CodeGroup>
+
+## QR codes
+
+Render scannable text or URLs with `QrCode`, or use `qrCode()` when script code needs the image URL or canonical SVG.
+
+<CodeGroup>
+  ```vue Component
+  <script setup lang="ts">
+  import { QrCode } from "@pictum/vue";
+  </script>
+
+  <template>
+    <QrCode
+      value="https://pictum.dev"
+      format="svg"
+      :quiet-zone="false"
+      foreground="#4c1d95ff"
+      background="#ede9fe"
+      aria-label="Open Pictum"
+      class="size-32"
+    />
+  </template>
+  ```
+
+  ```ts Helper
+  import { qrCode } from "@pictum/vue";
+
+  // Generate the URL without making a request.
+  const url = qrCode("https://pictum.dev", {
+    format: "svg",
+    quietZone: false,
+    foreground: "#4c1d95ff",
+    background: "#ede9fe",
+  }).url;
+
+  // Fetch canonical SVG markup.
+  const svg = await qrCode("https://pictum.dev").svg();
+  ```
+</CodeGroup>
+
+## Placeholders
+
+Render square or custom-dimension images with `Placeholder`, or use `placeholder()` when script code needs the selected image URL or SVG markup.
+
+<CodeGroup>
+  ```vue Component
+  <script setup lang="ts">
+  import { Placeholder } from "@pictum/vue";
+  </script>
+
+  <template>
+    <Placeholder
+      :size="320"
+      format="webp"
+      :density="2"
+      background="#ffffff"
+      color="#6d28d9"
+      text="Coming soon"
+      alt="Coming soon"
+    />
+  </template>
+  ```
+
+  ```ts Helper
+  import { placeholder } from "@pictum/vue";
+
+  // Generate a custom-dimension URL without making a request.
+  const url = placeholder({
+    width: 640,
+    height: 360,
+    format: "webp",
+    density: 3,
+    text: "Coming soon",
+  }).url;
+
+  // Fetch a square as canonical SVG markup.
+  const svg = await placeholder({
+    size: 320,
+    text: "Coming soon",
+  }).svg();
+  ```
+</CodeGroup>
+
+## Use composables
+
+Use `useIcon`, `useAvatar`, `useQrCode`, and `usePlaceholder` with values, refs, or getters. Each composable returns a computed asset.
+
+```vue
+<script setup lang="ts">
+import { ref } from "vue";
+import { useAvatar } from "@pictum/vue";
+
+const seed = ref("customer-123");
+const asset = useAvatar(seed, { variant: "monogram" });
+
+// Read asset.value.url in script code.
+</script>
+
+<template>
+  <img :src="asset.url" alt="Customer" />
+</template>
+```
+
+The package also re-exports the raw `icon()`, `avatar()`, `qrCode()`, and `placeholder()` helpers. Raw helpers return an asset immediately. Reading `.url` makes no request; `.svg()` fetches canonical SVG markup and is unavailable for portrait avatars.
+
+## Custom deployment
+
+You do not need a provider to use Pictum's production API. Components and composables work immediately after installation.
+
+Only add `PictumProvider` when a subtree should use another Pictum deployment:
+
+```vue
+<script setup lang="ts">
+import { PictumProvider } from "@pictum/vue";
+</script>
+
+<template>
+  <PictumProvider :options="{ baseUrl: 'https://assets.example.com/v1' }">
+    <Dashboard />
+  </PictumProvider>
+</template>
+```
+
+Pass `:options="{ baseUrl }"` to one component or pass options to a `use*` composable to override the provider. Raw helpers do not read provider context; pass `baseUrl` directly to those calls.

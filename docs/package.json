@@ -1,0 +1,14 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "name": "@pictum/docs",
+    "private": true,
+    "packageManager": "pnpm@11.11.0",
+    "scripts": {
+        "broken-links": "mint broken-links",
+        "dev": "mint dev",
+        "validate": "mint validate"
+    },
+    "devDependencies": {
+        "mint": "4.2.788"
+    }
+}
