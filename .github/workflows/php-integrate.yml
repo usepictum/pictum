@@ -74,13 +74,13 @@ jobs:
       ref: ${{ github.sha }}
 
   integrate:
-    name: PHP Integration
+    name: PHP Checks
     needs: [changes, title, quality, test]
     if: always()
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Check PHP integration jobs
+      - name: Verify required checks
         env:
           CHANGES_RESULT: ${{ needs.changes.result }}
           PHP_CHANGED: ${{ needs.changes.outputs.php }}
