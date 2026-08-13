@@ -1,0 +1,7 @@
+node_modules
+dist
+.astro
+coverage
+.vitest-attachments
+*.log
+.DS_Store

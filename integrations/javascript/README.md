@@ -1,0 +1,26 @@
+# <img src="https://pictum.dev/v1/icons/skill-icons:javascript.svg" width="24" /> Pictum for JavaScript
+
+> [!IMPORTANT]
+> Development takes place in the [Pictum monorepo](https://github.com/usepictum/pictum/tree/main/integrations/javascript).
+
+[![npm version](https://npmx.dev/api/registry/badge/version/pictum?color=bfdbfe&labelColor=404040)](https://npmx.dev/package/pictum)
+[![monthly downloads](https://npmx.dev/api/registry/badge/downloads/pictum?color=fed7aa&labelColor=404040)](https://npmx.dev/package/pictum)
+[![license](https://npmx.dev/api/registry/badge/license/pictum?color=bbf7d0&labelColor=404040)](https://npmx.dev/package/pictum)
+
+[Pictum](https://pictum.dev) asset helpers for JavaScript and TypeScript
+
+## Installation
+
+```bash
+npm install pictum
+```
+
+## Documentation
+
+Read the [Pictum documentation](https://docs.pictum.dev)
+
+## License
+
+Copyright (c) 2026 Nicolas Hedger and Pictum contributors.
+
+This project is licensed under the [MIT license](./LICENSE.md)

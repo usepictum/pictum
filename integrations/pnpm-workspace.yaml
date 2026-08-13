@@ -1,0 +1,21 @@
+packages:
+  - javascript
+  - javascript/playground
+  - react
+  - react/playground
+  - vue
+  - vue/playground
+  - svelte
+  - svelte/playground
+  - astro
+  - astro/playground
+  - web-components
+  - web-components/playground
+
+allowBuilds:
+  esbuild: true
+
+packageExtensions:
+  '@sveltejs/package@2.5.8':
+    dependencies:
+      typescript: 6.0.3

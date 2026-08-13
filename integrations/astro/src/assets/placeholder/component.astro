@@ -1,0 +1,45 @@
+---
+// biome-ignore-all lint/correctness/noUnusedVariables: Values are consumed by the Astro template.
+import { type PlaceholderOptions, placeholder } from "pictum";
+import { resolvePictumOptions } from "../../options";
+import type { PlaceholderProps } from "./types";
+
+type Props = PlaceholderProps;
+
+const {
+	size,
+	width,
+	height,
+	format,
+	density,
+	background,
+	color,
+	text,
+	options,
+	alt,
+	...imageProps
+} = Astro.props;
+const dimensions =
+	size === undefined
+		? { width: width as number, height: height as number }
+		: { size };
+const helperOptions = {
+	...(options ?? {}),
+	...resolvePictumOptions(options),
+	...dimensions,
+	...(format === undefined ? {} : { format }),
+	...(density === undefined ? {} : { density }),
+	...(background === undefined ? {} : { background }),
+	...(color === undefined ? {} : { color }),
+	...(text === undefined ? {} : { text }),
+} as PlaceholderOptions;
+const asset = placeholder(helperOptions);
+---
+
+<img
+	{...imageProps}
+	src={asset.url}
+	alt={alt}
+	width={size ?? width}
+	height={size ?? height}
+/>

@@ -1,0 +1,30 @@
+---
+// biome-ignore-all lint/correctness/noUnusedVariables: Values are consumed by the Astro template.
+import { type QrCodeOptions, qrCode } from "pictum";
+import { resolvePictumOptions } from "../../options";
+import type { QrCodeProps } from "./types";
+
+type Props = QrCodeProps;
+
+const {
+	value,
+	format,
+	quietZone,
+	foreground,
+	background,
+	options,
+	alt,
+	...imageProps
+} = Astro.props;
+const helperOptions: QrCodeOptions = {
+	...(options ?? {}),
+	...resolvePictumOptions(options),
+	...(format === undefined ? {} : { format }),
+	...(quietZone === undefined ? {} : { quietZone }),
+	...(foreground === undefined ? {} : { foreground }),
+	...(background === undefined ? {} : { background }),
+};
+const asset = qrCode(value, helperOptions);
+---
+
+<img {...imageProps} src={asset.url} alt={alt} />

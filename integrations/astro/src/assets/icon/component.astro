@@ -1,0 +1,20 @@
+---
+// biome-ignore-all lint/correctness/noUnusedVariables: Values are consumed by the Astro template.
+import { icon } from "pictum";
+import { resolvePictumOptions } from "../../options";
+import { loadIcon } from "./loader";
+import type { IconProps } from "./types";
+
+type Props = IconProps;
+
+const { name, options, ...svgProps } = Astro.props;
+const markup = await loadIcon(icon(name, resolvePictumOptions(options)));
+---
+
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox={markup.viewBox}
+	{...svgProps}
+>
+	<Fragment set:html={markup.body} />
+</svg>

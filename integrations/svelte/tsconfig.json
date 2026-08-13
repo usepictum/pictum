@@ -1,0 +1,20 @@
+{
+	"extends": "@tsconfig/strictest/tsconfig.json",
+	"compilerOptions": {
+		"target": "esnext",
+		"lib": ["es2023", "DOM"],
+		"isolatedModules": true,
+		"moduleDetection": "force",
+		"module": "preserve",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"types": ["@vitest/browser/matchers"],
+		"verbatimModuleSyntax": true
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.svelte",
+		"tests/**/*.ts",
+		"tests/**/*.svelte"
+	]
+}
