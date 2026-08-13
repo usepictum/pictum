@@ -52,6 +52,7 @@
 		"@tsconfig/strictest": "^2.0.8",
 		"@vitest/browser": "^4.1.10",
 		"@vitest/browser-playwright": "^4.1.10",
+		"git-cliff": "2.13.1",
 		"playwright": "^1.62.1",
 		"publint": "^0.3.23",
 		"svelte": "^5.56.8",
