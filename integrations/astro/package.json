@@ -1,0 +1,56 @@
+{
+	"name": "@pictum/astro",
+	"private": true,
+	"type": "module",
+	"types": "./src/index.ts",
+	"version": "0.1.2",
+	"description": "Pictum asset components for Astro.",
+	"author": "Nicolas Hedger <nicolas@hedger.ch>",
+	"license": "MIT",
+	"homepage": "https://github.com/usepictum/pictum/tree/main/integrations/astro#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/usepictum/pictum.git",
+		"directory": "integrations/astro"
+	},
+	"bugs": {
+		"url": "https://github.com/usepictum/pictum/issues"
+	},
+	"exports": {
+		".": "./src/index.ts",
+		"./components": "./src/components.ts",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"src"
+	],
+	"keywords": [
+		"astro-component",
+		"astro-integration"
+	],
+	"sideEffects": false,
+	"scripts": {
+		"build": "astro check",
+		"check": "biome check .",
+		"check:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"lint": "biome lint .",
+		"play": "pnpm build && pnpm --filter @pictum/playground-astro dev",
+		"test": "vitest --run",
+		"typecheck": "astro check"
+	},
+	"dependencies": {
+		"pictum": "workspace:^"
+	},
+	"peerDependencies": {
+		"astro": "^7.0.0"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.10",
+		"@biomejs/biome": "2.5.7",
+		"astro": "^7.2.0",
+		"playwright": "^1.62.1",
+		"typescript": "^6.0.3",
+		"vitest": "^4.1.10"
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"extends": "@tsconfig/strictest/tsconfig.json",
+	"compilerOptions": {
+		"target": "esnext",
+		"lib": ["es2023", "DOM"],
+		"jsx": "react-jsx",
+		"moduleDetection": "force",
+		"module": "preserve",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"types": [],
+		"verbatimModuleSyntax": true
+	},
+	"include": ["src"]
+}

@@ -1,0 +1,58 @@
+{
+	"name": "@pictum/vue",
+	"private": true,
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"version": "0.1.4",
+	"description": "Pictum asset components for Vue.",
+	"author": "Nicolas Hedger <nicolas@hedger.ch>",
+	"license": "MIT",
+	"homepage": "https://github.com/usepictum/pictum/tree/main/integrations/vue#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/usepictum/pictum.git",
+		"directory": "integrations/vue"
+	},
+	"bugs": {
+		"url": "https://github.com/usepictum/pictum/issues"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"dist"
+	],
+	"sideEffects": false,
+	"scripts": {
+		"build": "tsdown",
+		"check": "biome check .",
+		"check:fix": "biome check --write .",
+		"dev": "tsdown --watch",
+		"format": "biome format --write .",
+		"lint": "biome lint .",
+		"play": "pnpm build && pnpm --filter @pictum/playground-vue dev",
+		"test": "vitest --run",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"pictum": "workspace:^"
+	},
+	"peerDependencies": {
+		"vue": "^3.5.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.5.7",
+		"@tsconfig/strictest": "^2.0.8",
+		"@vitest/browser-playwright": "^4.1.10",
+		"playwright": "^1.62.1",
+		"tsdown": "^0.22.5",
+		"typescript": "^7.0.2",
+		"vite": "^8.1.4",
+		"vitest": "^4.1.10",
+		"vue": "^3.5.41"
+	}
+}

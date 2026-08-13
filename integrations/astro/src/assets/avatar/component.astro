@@ -1,0 +1,22 @@
+---
+// biome-ignore-all lint/correctness/noUnusedVariables: Values are consumed by the Astro template.
+import { type AvatarOptions, avatar } from "pictum";
+import { resolvePictumOptions } from "../../options";
+import type { AvatarProps } from "./types";
+
+type Props = AvatarProps;
+
+const { seed, variant, gender, format, size, options, alt, ...imageProps } =
+	Astro.props;
+const helperOptions = {
+	...(options ?? {}),
+	...resolvePictumOptions(options),
+	...(variant === undefined ? {} : { variant }),
+	...(gender === undefined ? {} : { gender }),
+	...(format === undefined ? {} : { format }),
+	...(size === undefined ? {} : { size }),
+} as AvatarOptions;
+const asset = avatar(seed, helperOptions);
+---
+
+<img {...imageProps} src={asset.url} alt={alt} />
