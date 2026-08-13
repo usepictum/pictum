@@ -1,0 +1,330 @@
+name: Integration
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: Detect integration changes
+    runs-on: ubuntu-24.04
+    outputs:
+      astro: ${{ steps.changes.outputs.astro }}
+      docs: ${{ steps.changes.outputs.docs }}
+      javascript: ${{ steps.changes.outputs.javascript }}
+      laravel: ${{ steps.changes.outputs.laravel }}
+      php: ${{ steps.changes.outputs.php }}
+      react: ${{ steps.changes.outputs.react }}
+      svelte: ${{ steps.changes.outputs.svelte }}
+      vue: ${{ steps.changes.outputs.vue }}
+      web: ${{ steps.changes.outputs.web }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Detect integration changes
+        id: changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          changed() {
+            if git diff --quiet "$BASE_SHA...$HEAD_SHA" -- "$@"; then
+              echo false
+            else
+              echo true
+            fi
+          }
+
+          npm_shared=(
+            integrations/.node-version
+            integrations/package.json
+            integrations/pnpm-lock.yaml
+            integrations/pnpm-workspace.yaml
+            .github/workflows/integrate.yml
+            .github/workflows/quality.yml
+            .github/workflows/test.yml
+          )
+
+          {
+            echo "astro=$(changed integrations/javascript integrations/astro .github/cliff/astro "${npm_shared[@]}")"
+            echo "docs=$(changed docs .github/workflows/integrate.yml)"
+            echo "javascript=$(changed integrations/javascript .github/cliff/javascript "${npm_shared[@]}")"
+            echo "laravel=$(changed integrations/php integrations/laravel .github/cliff/laravel .github/workflows/integrate.yml .github/workflows/quality.yml .github/workflows/test.yml .github/workflows/split-subtree.yml .github/workflows/laravel-release.yml scripts/sync-laravel-subtree.sh)"
+            echo "php=$(changed integrations/php .github/cliff/php .github/workflows/integrate.yml .github/workflows/quality.yml .github/workflows/test.yml .github/workflows/split-subtree.yml .github/workflows/php-release.yml scripts/sync-php-subtree.sh)"
+            echo "react=$(changed integrations/javascript integrations/react .github/cliff/react "${npm_shared[@]}")"
+            echo "svelte=$(changed integrations/javascript integrations/svelte .github/cliff/svelte "${npm_shared[@]}")"
+            echo "vue=$(changed integrations/javascript integrations/vue .github/cliff/vue "${npm_shared[@]}")"
+            echo "web=$(changed integrations/javascript integrations/web-components .github/cliff/web-components "${npm_shared[@]}")"
+          } >> "$GITHUB_OUTPUT"
+
+  title:
+    name: Conventional Commit
+    needs: changes
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Validate pull request title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          ASTRO_CHANGED: ${{ needs.changes.outputs.astro }}
+          DOCS_CHANGED: ${{ needs.changes.outputs.docs }}
+          JAVASCRIPT_CHANGED: ${{ needs.changes.outputs.javascript }}
+          LARAVEL_CHANGED: ${{ needs.changes.outputs.laravel }}
+          PHP_CHANGED: ${{ needs.changes.outputs.php }}
+          REACT_CHANGED: ${{ needs.changes.outputs.react }}
+          SVELTE_CHANGED: ${{ needs.changes.outputs.svelte }}
+          VUE_CHANGED: ${{ needs.changes.outputs.vue }}
+          WEB_CHANGED: ${{ needs.changes.outputs.web }}
+        run: |
+          pattern='^[a-zA-Z]+(\(([^()]+)\))?!?: .+'
+          if [[ ! "$TITLE" =~ $pattern ]]; then
+            echo "Pull request titles must use Conventional Commit syntax." >&2
+            exit 1
+          fi
+
+          scope="${BASH_REMATCH[2]}"
+          if [[ -n "$scope" ]]; then
+            changed_count=0
+            for changed_domain in \
+              "$ASTRO_CHANGED" \
+              "$DOCS_CHANGED" \
+              "$JAVASCRIPT_CHANGED" \
+              "$LARAVEL_CHANGED" \
+              "$PHP_CHANGED" \
+              "$REACT_CHANGED" \
+              "$SVELTE_CHANGED" \
+              "$VUE_CHANGED" \
+              "$WEB_CHANGED"; do
+              if [[ "$changed_domain" == true ]]; then
+                changed_count=$((changed_count + 1))
+              fi
+            done
+
+            if [[ "$changed_count" -ne 1 ]]; then
+              echo "Pull requests affecting multiple integrations must use an unscoped title." >&2
+              exit 1
+            fi
+
+            case "$scope" in
+              astro) changed="$ASTRO_CHANGED" ;;
+              docs) changed="$DOCS_CHANGED" ;;
+              javascript) changed="$JAVASCRIPT_CHANGED" ;;
+              laravel) changed="$LARAVEL_CHANGED" ;;
+              php) changed="$PHP_CHANGED" ;;
+              react) changed="$REACT_CHANGED" ;;
+              svelte) changed="$SVELTE_CHANGED" ;;
+              vue) changed="$VUE_CHANGED" ;;
+              web-components) changed="$WEB_CHANGED" ;;
+              *)
+                echo "Unknown pull request scope: $scope" >&2
+                exit 1
+                ;;
+            esac
+
+            if [[ "$changed" != true ]]; then
+              echo "Pull request scope '$scope' does not match the changed integration." >&2
+              exit 1
+            fi
+          fi
+
+          lower="${TITLE,,}"
+          if [[ "$lower" =~ \[(skip\ ci|ci\ skip|no\ ci|skip\ actions|actions\ skip)\] ]]; then
+            echo "Pull request titles must not contain a workflow skip directive." >&2
+            exit 1
+          fi
+
+  docs:
+    name: Docs Validation
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: docs
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version: '24'
+          cache: pnpm
+          cache-dependency-path: docs/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate documentation
+        run: pnpm run validate
+      - name: Check links
+        run: pnpm run broken-links -- --check-anchors --check-redirects
+
+  php-checks:
+    name: PHP Checks
+    needs: [changes, title]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.php }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]]; then
+            echo "PHP checks failed." >&2
+            exit 1
+          fi
+
+  laravel-checks:
+    name: Laravel Checks
+    needs: [changes, title]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.laravel }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]]; then
+            echo "Laravel checks failed." >&2
+            exit 1
+          fi
+
+  docs-checks:
+    name: Docs Checks
+    needs: [changes, title, docs]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.docs }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          DOCS_RESULT: ${{ needs.docs.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]] || { [[ "$CHANGED" == true ]] && [[ "$DOCS_RESULT" != success ]]; }; then
+            echo "Docs checks failed." >&2
+            exit 1
+          fi
+
+  javascript-checks:
+    name: JavaScript Checks
+    needs: [changes, title]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.javascript }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]]; then
+            echo "JavaScript checks failed." >&2
+            exit 1
+          fi
+
+  react-checks:
+    name: React Checks
+    needs: [changes, title]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.react }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]]; then
+            echo "React checks failed." >&2
+            exit 1
+          fi
+
+  vue-checks:
+    name: Vue Checks
+    needs: [changes, title]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.vue }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]]; then
+            echo "Vue checks failed." >&2
+            exit 1
+          fi
+
+  svelte-checks:
+    name: Svelte Checks
+    needs: [changes, title]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.svelte }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]]; then
+            echo "Svelte checks failed." >&2
+            exit 1
+          fi
+
+  astro-checks:
+    name: Astro Checks
+    needs: [changes, title]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.astro }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]]; then
+            echo "Astro checks failed." >&2
+            exit 1
+          fi
+
+  web-components-checks:
+    name: Web Components Checks
+    needs: [changes, title]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          CHANGED: ${{ needs.changes.outputs.web }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TITLE_RESULT: ${{ needs.title.result }}
+        run: |
+          if [[ "$CHANGES_RESULT" != success || "$TITLE_RESULT" != success ]]; then
+            echo "Web Components checks failed." >&2
+            exit 1
+          fi

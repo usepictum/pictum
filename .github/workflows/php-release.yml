@@ -127,9 +127,7 @@ jobs:
     permissions:
       actions: write
       contents: read
-    uses: ./.github/workflows/php-quality.yml
-    with:
-      ref: ${{ github.sha }}
+    uses: ./.github/workflows/quality.yml
 
   test:
     name: Tests
@@ -137,9 +135,7 @@ jobs:
     if: needs.changelog.outputs.mode == 'new'
     permissions:
       contents: read
-    uses: ./.github/workflows/php-test.yml
-    with:
-      ref: ${{ github.sha }}
+    uses: ./.github/workflows/test.yml
 
   release:
     name: Release pictum/pictum

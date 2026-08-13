@@ -1,0 +1,346 @@
+name: Tests
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  php:
+    name: PHP ${{ matrix.php }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations/php
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.4', '8.5']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Run tests
+        run: composer test
+
+  laravel:
+    name: Laravel (PHP ${{ matrix.php }}, Laravel ${{ matrix.laravel }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations/laravel
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.4'
+            laravel: '12'
+            testbench: '10.8'
+          - php: '8.4'
+            laravel: '13'
+            testbench: '11.0'
+          - php: '8.5'
+            laravel: '12'
+            testbench: '10.8'
+          - php: '8.5'
+            laravel: '13'
+            testbench: '11.0'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:v2
+          coverage: none
+      - name: Use the local Pictum package
+        run: >-
+          composer config --json repositories.pictum-local
+          '{"type":"path","url":"../php","options":{"symlink":false,"versions":{"pictum/pictum":"0.1.0"}}}'
+      - name: Select Laravel version
+        env:
+          LARAVEL_VERSION: ^${{ matrix.laravel }}.0
+          TESTBENCH_VERSION: ^${{ matrix.testbench }}
+        run: |
+          composer require --no-update \
+            "illuminate/cache:${LARAVEL_VERSION}" \
+            "illuminate/config:${LARAVEL_VERSION}" \
+            "illuminate/contracts:${LARAVEL_VERSION}" \
+            "illuminate/support:${LARAVEL_VERSION}" \
+            "illuminate/view:${LARAVEL_VERSION}"
+          composer require --dev --no-update \
+            "orchestra/testbench:${TESTBENCH_VERSION}"
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+      - name: Run tests
+        run: composer test
+
+  javascript:
+    name: JavaScript Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check JavaScript integration
+        run: |
+          pnpm --filter pictum --fail-if-no-match typecheck
+          pnpm --filter pictum --fail-if-no-match test
+          pnpm --filter pictum --fail-if-no-match build
+          pnpm --filter @pictum/playground --fail-if-no-match typecheck
+          pnpm --filter @pictum/playground --fail-if-no-match build
+
+  react:
+    name: React Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build JavaScript core
+        run: pnpm --filter pictum --fail-if-no-match build
+      - name: Install Chromium
+        run: pnpm --filter @pictum/react --fail-if-no-match exec playwright install --with-deps chromium
+      - name: Check React integration
+        run: |
+          pnpm --filter @pictum/react --fail-if-no-match typecheck
+          pnpm --filter @pictum/react --fail-if-no-match test
+          pnpm --filter @pictum/react --fail-if-no-match build
+          pnpm --filter @pictum/playground-react --fail-if-no-match typecheck
+          pnpm --filter @pictum/playground-react --fail-if-no-match build
+
+  vue:
+    name: Vue Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build JavaScript core
+        run: pnpm --filter pictum --fail-if-no-match build
+      - name: Install Chromium
+        run: pnpm --filter @pictum/vue --fail-if-no-match exec playwright install --with-deps chromium
+      - name: Check Vue integration
+        run: |
+          pnpm --filter @pictum/vue --fail-if-no-match typecheck
+          pnpm --filter @pictum/vue --fail-if-no-match test
+          pnpm --filter @pictum/vue --fail-if-no-match build
+          pnpm --filter @pictum/playground-vue --fail-if-no-match typecheck
+          pnpm --filter @pictum/playground-vue --fail-if-no-match build
+
+  svelte:
+    name: Svelte Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build JavaScript core
+        run: pnpm --filter pictum --fail-if-no-match build
+      - name: Install Chromium
+        run: pnpm --filter @pictum/svelte --fail-if-no-match exec playwright install --with-deps chromium
+      - name: Check Svelte integration
+        run: |
+          pnpm --filter @pictum/svelte --fail-if-no-match typecheck
+          pnpm --filter @pictum/svelte --fail-if-no-match test
+          pnpm --filter @pictum/svelte --fail-if-no-match build
+          pnpm --filter @pictum/playground-svelte --fail-if-no-match typecheck
+          pnpm --filter @pictum/playground-svelte --fail-if-no-match build
+
+  astro:
+    name: Astro Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build JavaScript core
+        run: pnpm --filter pictum --fail-if-no-match build
+      - name: Check Astro integration
+        run: |
+          pnpm --filter @pictum/astro --fail-if-no-match typecheck
+          pnpm --filter @pictum/astro --fail-if-no-match test
+          pnpm --filter @pictum/astro --fail-if-no-match build
+          pnpm --filter @pictum/playground-astro --fail-if-no-match typecheck
+          pnpm --filter @pictum/playground-astro --fail-if-no-match build
+
+  web-components:
+    name: Web Components Tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build JavaScript core
+        run: pnpm --filter pictum --fail-if-no-match build
+      - name: Install Chromium
+        run: pnpm --filter @pictum/web --fail-if-no-match exec playwright install --with-deps chromium
+      - name: Check Web Components integration
+        run: |
+          pnpm --filter @pictum/web --fail-if-no-match typecheck
+          pnpm --filter @pictum/web --fail-if-no-match test
+          pnpm --filter @pictum/web --fail-if-no-match build
+          pnpm --filter @pictum/playground-web --fail-if-no-match typecheck
+          pnpm --filter @pictum/playground-web --fail-if-no-match build
+
+  checks:
+    name: Tests
+    needs: [php, laravel, javascript, react, vue, svelte, astro, web-components]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          PHP_RESULT: ${{ needs.php.result }}
+          LARAVEL_RESULT: ${{ needs.laravel.result }}
+          JAVASCRIPT_RESULT: ${{ needs.javascript.result }}
+          REACT_RESULT: ${{ needs.react.result }}
+          VUE_RESULT: ${{ needs.vue.result }}
+          SVELTE_RESULT: ${{ needs.svelte.result }}
+          ASTRO_RESULT: ${{ needs.astro.result }}
+          WEB_COMPONENTS_RESULT: ${{ needs.web-components.result }}
+        run: |
+          if [[ "$PHP_RESULT" != success || \
+                "$LARAVEL_RESULT" != success || \
+                "$JAVASCRIPT_RESULT" != success || \
+                "$REACT_RESULT" != success || \
+                "$VUE_RESULT" != success || \
+                "$SVELTE_RESULT" != success || \
+                "$ASTRO_RESULT" != success || \
+                "$WEB_COMPONENTS_RESULT" != success ]]; then
+            echo "One or more test jobs failed." >&2
+            exit 1
+          fi

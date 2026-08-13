@@ -1,0 +1,303 @@
+name: Quality
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  php:
+    name: PHP Quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations/php
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.5'
+          tools: composer:v2
+          coverage: none
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Validate Composer configuration
+        run: composer validate --strict
+      - name: Check formatting
+        run: composer format:test
+      - name: Run static analysis
+        run: composer analyse
+
+  laravel:
+    name: Laravel Quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations/laravel
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2.37.2
+        with:
+          php-version: '8.5'
+          tools: composer:v2
+          coverage: none
+      - name: Validate Composer configuration
+        run: composer validate --strict
+      - name: Use the local Pictum package
+        run: >-
+          composer config --json repositories.pictum-local
+          '{"type":"path","url":"../php","options":{"symlink":false,"versions":{"pictum/pictum":"0.1.0"}}}'
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Check formatting
+        run: composer format:test
+      - name: Run static analysis
+        run: composer analyse
+
+  javascript:
+    name: JavaScript Quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting and lint rules
+        run: pnpm --filter pictum --fail-if-no-match check
+      - name: Validate git-cliff configurations
+        run: |
+          pnpm --filter pictum --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/javascript/changelog.toml" --offline --unreleased --context > /dev/null
+          pnpm --filter pictum --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/javascript/release-notes.toml" --offline --unreleased --context > /dev/null
+
+  react:
+    name: React Quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting and lint rules
+        run: pnpm --filter @pictum/react --fail-if-no-match check
+      - name: Validate git-cliff configurations
+        run: |
+          pnpm --filter @pictum/react --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/react/changelog.toml" --offline --unreleased --context > /dev/null
+          pnpm --filter @pictum/react --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/react/release-notes.toml" --offline --unreleased --context > /dev/null
+
+  vue:
+    name: Vue Quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting and lint rules
+        run: pnpm --filter @pictum/vue --fail-if-no-match check
+      - name: Validate git-cliff configurations
+        run: |
+          pnpm --filter @pictum/vue --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/vue/changelog.toml" --offline --unreleased --context > /dev/null
+          pnpm --filter @pictum/vue --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/vue/release-notes.toml" --offline --unreleased --context > /dev/null
+
+  svelte:
+    name: Svelte Quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting and lint rules
+        run: pnpm --filter @pictum/svelte --fail-if-no-match check
+      - name: Validate git-cliff configurations
+        run: |
+          pnpm --filter @pictum/svelte --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/svelte/changelog.toml" --offline --unreleased --context > /dev/null
+          pnpm --filter @pictum/svelte --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/svelte/release-notes.toml" --offline --unreleased --context > /dev/null
+
+  astro:
+    name: Astro Quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting and lint rules
+        run: pnpm --filter @pictum/astro --fail-if-no-match check
+      - name: Validate git-cliff configurations
+        run: |
+          pnpm --filter @pictum/astro --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/astro/changelog.toml" --offline --unreleased --context > /dev/null
+          pnpm --filter @pictum/astro --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/astro/release-notes.toml" --offline --unreleased --context > /dev/null
+
+  web-components:
+    name: Web Components Quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: integrations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@9fd676a19091d4595eefd76e4bd31c97133911f1 # v4.2.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
+        with:
+          node-version-file: integrations/.node-version
+          cache: pnpm
+          cache-dependency-path: integrations/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Check formatting and lint rules
+        run: pnpm --filter @pictum/web --fail-if-no-match check
+      - name: Validate git-cliff configurations
+        run: |
+          pnpm --filter @pictum/web --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/web-components/changelog.toml" --offline --unreleased --context > /dev/null
+          pnpm --filter @pictum/web --fail-if-no-match exec git-cliff --config "$GITHUB_WORKSPACE/.github/cliff/web-components/release-notes.toml" --offline --unreleased --context > /dev/null
+
+  checks:
+    name: Quality
+    needs: [php, laravel, javascript, react, vue, svelte, astro, web-components]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify required checks
+        env:
+          PHP_RESULT: ${{ needs.php.result }}
+          LARAVEL_RESULT: ${{ needs.laravel.result }}
+          JAVASCRIPT_RESULT: ${{ needs.javascript.result }}
+          REACT_RESULT: ${{ needs.react.result }}
+          VUE_RESULT: ${{ needs.vue.result }}
+          SVELTE_RESULT: ${{ needs.svelte.result }}
+          ASTRO_RESULT: ${{ needs.astro.result }}
+          WEB_COMPONENTS_RESULT: ${{ needs.web-components.result }}
+        run: |
+          if [[ "$PHP_RESULT" != success || \
+                "$LARAVEL_RESULT" != success || \
+                "$JAVASCRIPT_RESULT" != success || \
+                "$REACT_RESULT" != success || \
+                "$VUE_RESULT" != success || \
+                "$SVELTE_RESULT" != success || \
+                "$ASTRO_RESULT" != success || \
+                "$WEB_COMPONENTS_RESULT" != success ]]; then
+            echo "One or more quality jobs failed." >&2
+            exit 1
+          fi

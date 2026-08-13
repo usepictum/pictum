@@ -126,9 +126,7 @@ jobs:
     if: needs.changelog.outputs.mode == 'new'
     permissions:
       contents: read
-    uses: ./.github/workflows/laravel-quality.yml
-    with:
-      ref: ${{ github.sha }}
+    uses: ./.github/workflows/quality.yml
 
   test:
     name: Tests
@@ -136,9 +134,7 @@ jobs:
     if: needs.changelog.outputs.mode == 'new'
     permissions:
       contents: read
-    uses: ./.github/workflows/laravel-test.yml
-    with:
-      ref: ${{ github.sha }}
+    uses: ./.github/workflows/test.yml
 
   release:
     name: Release pictum/laravel
